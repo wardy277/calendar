@@ -1,5 +1,6 @@
 
 body {
+    /*grey is #F7F7F7 */
 
 }
 
@@ -13,19 +14,19 @@ body {
 }
 
 .calendar .day {
-    border-left: 1px solid #F7F7F7;
-    border-top: 1px solid #F7F7F7;
+    border-left: 1px solid red;
+    border-top: 1px solid red;
     height: 100px;
     display: block;
 }
 
 .calendar .day:last-child {
-    border-right: 1px solid #F7F7F7;
+    border-right: 1px solid red;
 }
 
 .calendar .week:last-child .day {
     border-top: 1px solid #2b669a;
-    border-bottom: 1px solid #F7F7F7;
+    border-bottom: 1px solid red;
 }
 
 .calendar .week:last-child .day.active {
@@ -37,7 +38,7 @@ body {
 }
 
 .calendar .week:last-child span.day:first-child {
-    border-left: none;
+    border-left: 1px solid red;
 }
 
 .calendar .day.active {
@@ -46,33 +47,42 @@ body {
 
 
 
+
 @media (max-width: 992px) {
     .calendar .week .day.active {
         border-right: 1px solid #2b669a;
-    }
-
-    .calendar .week:last-child .day {
         border-left: 1px solid #2b669a;
-        border-top: none;
+        border-top: 1px solid #2b669a;
+        border-bottom: none !important;
     }
-    .calendar .week:last-child .day:first-of-type {
-         border-top: 1px solid #2b669a;
-     }
 
+    /* bottom of the month (from non month) */
+    .calendar .week:last-child .day:first-of-type:not(.active){
+        border-top: 1px solid #2b669a;
+        font-weight: bold;
+    }
+
+    /* top non month cells */
+    .calendar .week:first-child span.day:last-of-type {
+        border-right: 1px solid red;
+    }
+
+    /* bottom non month cells */
     .calendar .week:last-child span.day:first-of-type {
         border-top: none;
         border-right: 1px solid;
-        border-color: #F7F7F7;
+        border-color: red;
     }
 
+    /* hide some of the days apart from the closest */
     .calendar .week:first-child span.day:not(:last-of-type) {
         display: none;
     }
-
     .calendar .week:last-child span.day:not(:first-of-type) {
         display: none;
     }
 
+    /* hide the week days */
     .calendar .calendar-title {
         display: none;
     }
@@ -86,15 +96,9 @@ body {
 
 
 
-
-
-
-
-
-
-
-
-
+/**
+ * "Hack" for a seven column bootsrap
+ */
 
 @media (min-width: 768px) {
     .seven-cols .col-md-1,
