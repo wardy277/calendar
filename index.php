@@ -12,27 +12,29 @@ $calendar = new Calendar($date);
 ?>
 
 <div class="calendar">
-	<?=$calendar->buildNav()?>
+	<div class="calendar-header">
+		<?=$calendar->buildNav()?>
 
 
-	<div class="row seven-cols">
-		<?php foreach($calendar->getWeekdays() as $weekday){ ?>
-			<div class="col-md-1 week-title"><?=$weekday?></div>
-		<?php } ?>
+		<div class="row seven-cols calendar-title">
+			<?php foreach($calendar->getWeekdays() as $weekday){ ?>
+				<div class="col-md-1 week-title"><?=$weekday?></div>
+			<?php } ?>
+		</div>
 	</div>
 
-
-	<div class="row seven-cols week">
-		<?php
-		foreach($calendar->getDays() as $date){
+	<div class="calendar-body">
+		<div class="row seven-cols week">
+			<?php
+			foreach ($calendar->getDays() as $date){
 			//separates out the days of the current month (span and div in order for last-of-type to work)
 			if($date->format('m') == $calendar->format('m')){
 				$class = "active";
-				$tag = 'div';
+				$tag   = 'div';
 			}
 			else{
 				$class = "";
-				$tag = 'span';
+				$tag   = 'span';
 			}
 			?>
 
@@ -41,10 +43,12 @@ $calendar = new Calendar($date);
 			</<?=$tag?>>
 
 			<?php
-			if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW')-1){
+			if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW') - 1){
 				echo "</div><div class='row seven-cols week'>";
 			}
 		}
 		?>
 	</div>
+</div>
+
 </div>

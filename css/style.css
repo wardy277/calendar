@@ -16,6 +16,7 @@ body {
     border-left: 1px solid #F7F7F7;
     border-top: 1px solid #F7F7F7;
     height: 100px;
+    display: block;
 }
 
 .calendar .day:last-child {
@@ -45,9 +46,37 @@ body {
 
 
 
+@media (max-width: 992px) {
+    .calendar .week .day.active {
+        border-right: 1px solid #2b669a;
+    }
 
+    .calendar .week:last-child .day {
+        border-left: 1px solid #2b669a;
+        border-top: none;
+    }
+    .calendar .week:last-child .day:first-of-type {
+         border-top: 1px solid #2b669a;
+     }
 
+    .calendar .week:last-child span.day:first-of-type {
+        border-top: none;
+        border-right: 1px solid;
+        border-color: #F7F7F7;
+    }
 
+    .calendar .week:first-child span.day:not(:last-of-type) {
+        display: none;
+    }
+
+    .calendar .week:last-child span.day:not(:first-of-type) {
+        display: none;
+    }
+
+    .calendar .calendar-title {
+        display: none;
+    }
+}
 
 
 
