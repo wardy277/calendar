@@ -25,17 +25,20 @@ $calendar = new Calendar($date);
 	<div class="row seven-cols week">
 		<?php
 		foreach($calendar->getDays() as $date){
+			//separates out the days of the current month (span and div in order for last-of-type to work)
 			if($date->format('m') == $calendar->format('m')){
 				$class = "active";
+				$tag = 'div';
 			}
 			else{
 				$class = "";
+				$tag = 'span';
 			}
 			?>
 
-			<div class="col-md-1 day <?=$class?>">
+			<<?=$tag?> class="col-md-1 day <?=$class?>">
 				<?=$date->format('d')?>
-			</div>
+			</<?=$tag?>>
 
 			<?php
 			if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW')-1){

@@ -31,10 +31,12 @@ body {
     border-bottom: 1px solid #2b669a;
 }
 
-/* something like this - almost there*/
-.calendar .week:last-child .day.active:last-child {
+.calendar .week:last-child span.day:first-of-type {
     border-left: 1px solid #2b669a;
-    color: red;
+}
+
+.calendar .week:last-child span.day:first-child {
+    border-left: none;
 }
 
 .calendar .day.active {
