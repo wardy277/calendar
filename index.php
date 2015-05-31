@@ -11,44 +11,49 @@ $calendar = new Calendar($date);
 
 ?>
 
+<?=$calendar->buildNav()?>
+
 <div class="calendar">
 	<div class="calendar-header">
-		<?=$calendar->buildNav()?>
-
-
-		<div class="row seven-cols calendar-title">
+		<div class="row seven-cols calendar_title">
 			<?php foreach($calendar->getWeekdays() as $weekday){ ?>
 				<div class="col-md-1 week-title"><?=$weekday?></div>
 			<?php } ?>
 		</div>
 	</div>
 
-	<div class="calendar-body">
+	<div class="calendar_body">
 		<div class="row seven-cols week">
 			<?php
-			foreach ($calendar->getDays() as $date){
-			//separates out the days of the current month (span and div in order for last-of-type to work)
-			if($date->format('m') == $calendar->format('m')){
-				$class = "active";
-				$tag   = 'div';
-			}
-			else{
-				$class = "";
-				$tag   = 'span';
+			foreach($calendar->getDays() as $date){
+				//separates out the days of the current month (span and div in order for last-of-type to work)
+				if($date->format('m') == $calendar->format('m')){
+					$class = "active";
+					$tag   = 'div';
+				}
+				else{
+					$class = "";
+					$tag   = 'span';
+				}
+
+				$day_content = "";
+				$day = new Day($date);
+				foreach($day->getTorrents() as $torrent){
+					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
+				}
+
+
+				echo "<$tag class='col-md-1 day $class'>
+					<div class='day-no'>".$date->format('d')."</div>
+					$day_content
+				  </$tag>";
+
+				if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW') - 1){
+					echo "</div><div class='row seven-cols week'>";
+				}
 			}
 			?>
-
-			<<?=$tag?> class="col-md-1 day <?=$class?>">
-				<?=$date->format('d')?>
-			</<?=$tag?>>
-
-			<?php
-			if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW') - 1){
-				echo "</div><div class='row seven-cols week'>";
-			}
-		}
-		?>
+		</div>
 	</div>
-</div>
 
 </div>

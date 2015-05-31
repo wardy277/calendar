@@ -1,4 +1,26 @@
 <?php
+//process get vars from args
+if(substr($_SERVER['SHELL'], 0, 4) == '/bin'){
+	$requests = $argv;
+	array_shift($requests);
+
+	foreach($requests as $request){
+		$request                 = explode("=", $request);
+		$_REQUEST[ $request[0] ] = $request[1];
+		$_GET[ $request[0] ]     = $request[1];
+	}
+
+	if($_REQUEST['debug'] == 1){
+		$_GET['debug'] = 1;
+	}
+	$cronning = true;
+}
+
+if($_GET['debug'] == 1){
+	ini_set("display_errors", 1);
+	error_reporting(E_ALL ^ E_NOTICE);
+}
+
 
 function pre_r($v){
 	echo "\n<pre>";

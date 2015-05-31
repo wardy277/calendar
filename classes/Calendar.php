@@ -95,35 +95,37 @@ class Calendar extends Entity{
 	}
 
 	public function buildNav(){
-		//nav
+		//previous month
 		$date = clone($this->date);
 		$date->modify('last month');
 		$month = $date->format('m');
-		$year = $date->format('y');
+		$year  = $date->format('y');
 
-		if ($year != $this->format('y')) {
-			$url = "?m=$month&y=$year";
-		} else {
-			$url = "?m=$month";
+		if($year != $this->format('y')){
+			$previous_month = "?m=$month&y=$year";
+		}
+		else{
+			$previous_month = "?m=$month";
 		}
 
-		echo "<a href='$url'><</a>";
 
-
+		//next month
 		$date = clone($this->date);
 		$date->modify('next month');
 		$month = $date->format('m');
-		$year = $date->format('y');
+		$year  = $date->format('y');
 
-		if ($year != $this->format('y')) {
-			$url = "?m=$month&y=$year";
-		} else {
-			$url = "?m=$month";
+		if($year != $this->format('y')){
+			$next_month = "?m=$month&y=$year";
+		}
+		else{
+			$next_month = "?m=$month";
 		}
 
-		echo "      " . $this->format('M') . "      ";
-		echo "<a href='$url'>></a>\n";
+		$month = $this->format('F');
 
-
+		ob_start();
+		include(dirname(__FILE__)."/../templates/nav.phtml");
+		return ob_get_clean();
 	}
 }

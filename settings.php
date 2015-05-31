@@ -1,36 +1,25 @@
 <?php
-if($_GET['debug'] == 1){
-	ini_set("display_errors", 1);
-	error_reporting(E_ALL ^ E_NOTICE);
-}
-
+//setup globals
+$cronning = false;
+global $settings, $cronning;
 
 //want this as early as possible for debugging
 require_once(dirname(__FILE__)."/classes/common.php");
+require_once(dirname(__FILE__)."/connection_settings.php");
 
-//process get vars from args
-if(substr($_SERVER['SHELL'], 0, 4) == '/bin'){
-	$requests = $argv;
-	array_shift($requests);
-
-	foreach($requests as $request){
-		$request                 = explode("=", $request);
-		$_REQUEST[ $request[0] ] = $request[1];
-		$_GET[ $request[0] ]     = $request[1];
-	}
-
-	if($_REQUEST['debug'] == 1){
-		$_GET['debug'] = 1;
-	}
-	$cronning = true;
+//maybe this can be a class
+$sql = "SELECT * FROM settings";
+foreach($db->getArray($sql) as $setting){
+	$settings[ $setting['setting'] ] = $setting['value'];
 }
 
-//$db = new Database($server, $username, $password, $database);
+include(dirname(__FILE__)."/functions.php");
 
-//include(dirname(__FILE__)."/functions.php");
+if(!$cronning){
+	ob_start();
+	register_shutdown_function('shutdown_function');
+}
 
-
-register_shutdown_function('shutdown_function');
 function shutdown_function(){
 	$output = ob_get_clean();
 
@@ -38,3 +27,4 @@ function shutdown_function(){
 	echo $output;
 	include(dirname(__FILE__)."/templates/footer.html");
 }
+

@@ -4,7 +4,7 @@ body {
 
 }
 
-.content {
+.calendar {
     width: 90%;
     margin: 0 auto;
 }
@@ -16,14 +16,17 @@ body {
 .calendar .day {
     border-left: 1px solid red;
     border-top: 1px solid red;
-    height: 100px;
+    height: 150px;
     display: block;
 }
 
+
+/* last child has right border */
 .calendar .day:last-child {
     border-right: 1px solid red;
 }
 
+/* next months days */
 .calendar .week:last-child .day {
     border-top: 1px solid #2b669a;
     border-bottom: 1px solid red;
@@ -83,11 +86,16 @@ body {
     }
 
     /* hide the week days */
-    .calendar .calendar-title {
+    .calendar .calendar_title {
         display: none;
     }
 }
 
+
+
+.torrent_link {
+    font-size: 13px;
+}
 
 
 

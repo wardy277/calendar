@@ -23,6 +23,11 @@ class Entity{
 
 			return $this->getAttr($field);
 		}
+		else if(substr($field, 0, 3) == 'set'){
+			$field = substr($field, 3);
+
+			return $this->setAttr($field, $arguments[0]);
+		}
 		else{
 			echo "Function not found $field";
 			exit;
@@ -33,7 +38,7 @@ class Entity{
 	 * Sub magic function, behaves the same as jQuery's attr fucntion
 	 * @TODO: impliment daving of attr (database?)
 	 */
-	public function getAttr($field, $value = false){
+	public function getAttr($field){
 		//de camel case
 		$field = $this->deCamel($field);
 
@@ -44,6 +49,12 @@ class Entity{
 
 	}
 
+	public function setAttr($field, $value){
+		//de camel case
+		$field = $this->deCamel($field);
+
+		return $this->_data[ $field ] = $value;
+	}
 	/**
 	 * Coverts a camel case string into an undescore string
 	 */
