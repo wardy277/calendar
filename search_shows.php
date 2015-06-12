@@ -17,12 +17,11 @@ if($_GET['add_show']){
 
 		$show_id = $show->getId();
 	}
+	else{
+		$show_id = $show->getId();
+	}
 
-	$data = array(
-		'user_id' => 1,
-		'show_id' => $show_id
-	);
-	$db->insert('users_shows', $data, true);
+	$session->getUser()->AddShow($show_id);
 
 	//if no episode foudn then need to generate them first
 	$show->syncEpisodes();

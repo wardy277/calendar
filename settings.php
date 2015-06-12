@@ -1,7 +1,7 @@
 <?php
 //setup globals
 $cronning = false;
-global $settings, $cronning;
+global $settings, $cronning, $session;
 
 //want this as early as possible for debugging
 require_once(dirname(__FILE__)."/classes/common.php");
@@ -14,6 +14,12 @@ foreach($db->getArray($sql) as $setting){
 }
 
 include(dirname(__FILE__)."/functions.php");
+
+session_start();
+$session = Session::loadSession();
+
+//todo - add login handeling
+$session->login(1);
 
 if(!$cronning){
 	ob_start();

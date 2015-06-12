@@ -6,7 +6,7 @@
  * Date: 29/05/15
  * Time: 16:44
  */
-class Show extends DatabaseEntity {
+class Show extends DatabaseEntity{
 	protected static $_table = 'tv_shows';
 
 	public static function loadFromTvrage($id){
@@ -34,7 +34,33 @@ class Show extends DatabaseEntity {
 	}
 
 	public function syncEpisodes(){
+		global $settings;
+		$data   = array('api_key' => $settings['tvrage_api_key']);
+		$tvrage = new TvRage($data);
 
+		foreach($tvrage->getEpisodes($this->getTvrageId()) as $data){
+
+			//check already exists
+			$lookup_array = array(
+				'show_id' => $this->getId(),
+				'season'  => $data['season'],
+				'episode' => $data['episode'],
+			);
+
+			$object = Episode::loadWhere($lookup_array);
+
+			if($object){
+				//update
+				foreach($data as $field => $value){
+					$object->setAttr($field, $value);
+				}
+			}
+			else{
+				$data['show_id'] = $this->getId();
+				Episode::create($data);
+
+			}
+		}
 	}
 	
 }
