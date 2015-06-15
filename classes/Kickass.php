@@ -10,8 +10,11 @@ class Kickass extends Entity{
 	private static $proxy;
 
 	public function getProxy(){
-		if(!Kickass::$proxy){
-			$url = "http://kat.randomproxy.net";
+		//needs to be cached or something
+
+		//if(!static::$proxy){
+		if(!$_SESSION['kickass_proxy']){
+			echo $url = "http://kat.randomproxy.net";
 
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
@@ -30,10 +33,12 @@ class Kickass extends Entity{
 				$proxy = substr($proxy, 0, -1);
 			}
 
-			Kickass::$proxy = $proxy;
+			//Kickass::$proxy = $proxy;
+			$_SESSION['kickass_proxy'] = $proxy;
 		}
 
-		return Kickass::$proxy;
+		//return Kickass::$proxy;
+		return $_SESSION['kickass_proxy'];
 	}
 
 	public function buildLink(){
@@ -43,7 +48,7 @@ class Kickass extends Entity{
 		$search = $this->getShowName()." S".$season."E".$episode;
 		$url = $this->buildSearch($search);
 
-		return "<a href='$url' title='".$this->getTitle()."'>".$this->getShowName()."</a>";
+		return "<a href='$url' title='".$this->getTitle()."' target='_blank'>".$this->getShowName()."</a>";
 	}
 
 
