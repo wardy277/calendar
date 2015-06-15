@@ -12,13 +12,16 @@ class Day extends Entity{
 		$this->_data['date'] = $date;
 	}
 
+	/**
+	 * @return Kickass[]
+	 */
 	public function getTorrents(){
 		global $db;
 
 		$sql = $db->build("SELECT t.title AS show_name, e.title, UNIX_TIMESTAMP(e.aired_date) AS time, season, episode
                             FROM tv_shows t, episode_list e, users_shows u
-                            WHERE e.show_id=t.tvrage_id
-                            AND u.show_id=t.tvrage_id
+                            WHERE e.show_id = t.id
+                            AND u.show_id = t.id
                          	AND SUBSTRING(e.aired_date, 1, 10) = '?'
                      		AND episode > 0
                             ORDER BY time, title, season, episode",
