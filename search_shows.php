@@ -24,19 +24,19 @@ if($_GET['add_show']){
 
 	$session->getUser()->AddShow($show_id);
 
-	//if no episode foudn then need to generate them first
+	//if no episode found then need to generate them first
 	$show->syncEpisodes();
 	Url::redirect('/');
 }
 
 
-$table_data = array('class' => 'table');
+$table_data = array('class' => 'table table-hover table-striped');
 $table      = new Table($table_data);
 
 foreach($tvrage->searchShows($_GET['search']) as $show){
 	$add_show = new Url();
 	$add_show->addParam('add_show', $show->getShowid());
-	$add_show->setLabel('Add');
+	$add_show->setLabel('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>');
 
 	$data = array(
 		'tvrage_id' => $show->getShowid(),

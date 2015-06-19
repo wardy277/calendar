@@ -14,8 +14,8 @@ body {
 }
 
 .calendar .day {
-    border-left: 1px solid red;
-    border-top: 1px solid red;
+    border-left: 1px solid #CECECE;
+    border-top: 1px solid #CECECE;
     height: 150px;
     display: block;
 }
@@ -23,13 +23,13 @@ body {
 
 /* last child has right border */
 .calendar .day:last-child {
-    border-right: 1px solid red;
+    border-right: 1px solid #CECECE;
 }
 
 /* next months days */
 .calendar .week:last-child .day {
     border-top: 1px solid #2b669a;
-    border-bottom: 1px solid red;
+    border-bottom: 1px solid #CECECE;
 }
 
 .calendar .week:last-child .day.active {
@@ -41,13 +41,15 @@ body {
 }
 
 .calendar .week:last-child span.day:first-child {
-    border-left: 1px solid red;
+    border-left: 1px solid #CECECE;
 }
 
 .calendar .day.active {
     border-color: #2b669a;
 }
 
+made a way to delete shows
+style tweaks
 
 
 
@@ -67,14 +69,14 @@ body {
 
     /* top non month cells */
     .calendar .week:first-child span.day:last-of-type {
-        border-right: 1px solid red;
+        border-right: 1px solid #CECECE;
     }
 
     /* bottom non month cells */
     .calendar .week:last-child span.day:first-of-type {
         border-top: none;
         border-right: 1px solid;
-        border-color: red;
+        border-color: #CECECE;
     }
 
     /* hide some of the days apart from the closest */
@@ -92,11 +94,16 @@ body {
 }
 
 
-
+.day.today {
+    background-color: #D9EDF7;
+}
 .torrent_link {
     font-size: 13px;
 }
 
+.show_block img {
+    height: 240px;
+}
 
 
 

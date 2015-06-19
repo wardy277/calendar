@@ -1,7 +1,7 @@
 <?php
 //setup globals
 $cronning = false;
-global $settings, $cronning, $session;
+global $settings, $cronning, $session, $calendar;
 
 //want this as early as possible for debugging
 require_once(dirname(__FILE__)."/classes/common.php");
@@ -27,9 +27,16 @@ if(!$cronning){
 }
 
 function shutdown_function(){
+	global $calendar;
+
 	$output = ob_get_clean();
 
 	include(dirname(__FILE__)."/templates/header.html");
+
+	if(!$calendar){
+		include(dirname(__FILE__)."/templates/nav.phtml");
+	}
+
 	echo $output;
 	include(dirname(__FILE__)."/templates/footer.html");
 }

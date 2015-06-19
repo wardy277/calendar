@@ -125,7 +125,7 @@ class Calendar extends Entity{
 		$month = $this->format('F');
 
 		ob_start();
-		include(dirname(__FILE__)."/../templates/nav.phtml");
+		include(dirname(__FILE__)."/../templates/nav_calendar.phtml");
 		return ob_get_clean();
 	}
 }

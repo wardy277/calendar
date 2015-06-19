@@ -32,7 +32,13 @@ class Url extends Entity{
 
 	public function buildAnchor($label=false){
 		if(!$label){
-			$label = $this->getLabel();
+			if($this->getButton()){
+				$label = $this->getButton();
+				$class = "btn btn-info";
+			}
+			else{
+				$label = $this->getLabel();
+			}
 
 			if(!$label){
 				$label = 'Link';
@@ -41,7 +47,7 @@ class Url extends Entity{
 
 		$url = $this->getPath().'?'.http_build_query($this->getParams());
 
-		return "<a href='$url'>$label</a>";
+		return "<a href='$url' class='$class'>$label</a>";
 	}
 
 	public function redirect($url){

@@ -8,6 +8,7 @@ if($_GET['m']){
 }
 
 $calendar = new Calendar($date);
+$today = new DateTime();
 
 ?>
 
@@ -42,6 +43,11 @@ $calendar = new Calendar($date);
 					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
 				}
 
+
+				//today?
+				if($date == $today ){
+					$class .= " today";
+				}
 
 				echo "<$tag class='col-md-1 day $class'>
 					<div class='day-no'>".$date->format('d')."</div>
