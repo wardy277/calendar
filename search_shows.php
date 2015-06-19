@@ -18,6 +18,7 @@ if($_GET['add_show']){
 		$show_id = $show->getId();
 	}
 	else{
+		$show->update($data);
 		$show_id = $show->getId();
 	}
 

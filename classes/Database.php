@@ -162,6 +162,7 @@ class Database{
 			}
 		}
 
+
 		//escape values now
 		$data = $this->escape($data);
 

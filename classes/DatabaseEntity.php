@@ -11,6 +11,7 @@ abstract class DatabaseEntity extends Entity{
 	protected static $_table;
 	protected static $_key_field = 'id';
 
+	protected $_data_original;
 	protected $_db;
 
 	/**
@@ -21,6 +22,8 @@ abstract class DatabaseEntity extends Entity{
 		$this->_db = $db;
 
 		parent::__construct($row);
+
+		$this->_data_original = $this->_data;
 
 		//set to save on close
 		register_shutdown_function(array($this, 'save'));
@@ -95,16 +98,41 @@ abstract class DatabaseEntity extends Entity{
 	 * Update the current object in the database
 	 */
 	public function save(){
-		$data = $this->_data;
-
+		$data = array();
 		//unset id as not updatable
 		unset($data['id']);
 
-		$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
+		foreach($this->_data as $field => $value){
+			if($this->_data_original[$field] != $value){
+				$data[$field] = $value;
+			}
+		}
+
+		if(!empty($data)){
+			$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
+		}
 	}
 
 	public function getKey(){
 		return $this->getattr(self::$_key_field);
+	}
+
+	/**
+	 * updated the object form an array
+	 * does not create new variable - should it?
+	 * This doesnt update in the db as we have save for that.
+	 * @param $data
+	 */
+	public function update($data){
+		unset($data['id']);
+
+		//only those which have changed
+		foreach($this->_data as $field => $value){
+			if($data[$field] != $value){
+				$this->setAttr($field, $value);
+			}
+		}
+		//$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
 	}
 
 }

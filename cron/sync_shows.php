@@ -1,34 +1,30 @@
 <?php
 include(dirname(__FILE__)."/../settings.php");
 
-/*
-$url = "http://services.tvrage.com/myfeeds/currentshows.php?key=".$settings['tvrage_api_key'];
-$file_contents = file_get_contents($url);
-$file_contents = file_put_contents('/tmp/shows.xml', $file_contents);
-*/
+$full = $_GET['full']?true:false;
 
-$file_contents = file_get_contents('/tmp/shows.xml');
+$data   = array('api_key' => $settings['tvrage_api_key']);
+$tvrage = new TvRage($data);
 
-$xml = simplexml_load_string($file_contents);
+$shows = $tvrage->getAllShows();
+$total = count($shows);
+$last_percentage = 0;
 
-foreach($xml->children() as $country){
-	foreach($country->children() as $show){
+foreach($shows as $tvrage_show){
+	$i++;
 
-		$show_details = xml2array($show);
+	$tvrage_id = $tvrage_show->getShowid();
 
-		echo "\nadding show ".$show_details['showid']." - ".$show_details['showname'];
+	//see if show already exists
+	$show = Show::loadFromTvrage($tvrage_id);
 
-		$sql = "INSERT INTO tv_shows
-                        SET tvrage_id = '".$db->escape($show_details['showid'])."',
-                        title = '".$db->escape($show_details['showname'])."',
-                        url = '".$db->escape($show_details['showlink'])."'
-                        ON DUPLICATE KEY UPDATE title = '".$db->escape($show_details['showname'])."',
-                        url = '".$db->escape($show_details['showlink'])."'
-                        ";
-		$db->query($sql);
-		#echo $sql;exit;
+
+	if(!$show || !$show->getId()){
+		//this show is new
+		$data = $tvrage->getShow($tvrage_id);
+		$show = Show::create($data);
+		echo "+";
 	}
+
+	$percentage = round($i/$total);
 }
-
-
-

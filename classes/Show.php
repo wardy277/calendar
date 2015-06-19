@@ -21,12 +21,6 @@ class Show extends DatabaseEntity{
 	public static function create($data){
 		global $db;
 
-		$data = array(
-			'tvrage_id' => $data->getShowid(),
-			'title'     => $data->getShowname(),
-			'url'       => $data->getShowlink()
-		);
-
 		//todo - add useful data like air day and time
 		$id = $db->insert(static::$_table, $data);
 
@@ -35,10 +29,30 @@ class Show extends DatabaseEntity{
 
 	public function syncEpisodes(){
 		global $settings;
+
+		//update show first - just incase
+		$this->updateShow();
+
 		$data   = array('api_key' => $settings['tvrage_api_key']);
 		$tvrage = new TvRage($data);
 
+
 		foreach($tvrage->getEpisodes($this->getTvrageId()) as $data){
+			//set aired time from show
+			$data['aired_date'] .= " ".$this->getAirTime();
+
+			//convert aired date to GMT as that's zero using  timezone for show
+			$timezone = $this->getTimezone();
+			if(empty($timezone) || $timezone == '0000-00-00 00:00:00'){
+				//default to GMT
+				$timezone = 'GMT';
+			}
+
+			//get the time based on aired date, at the shows timezone
+			$date = new DateTime($data['aired_date'], new DateTimeZone($timezone));
+			//convert the time to GTM as a standard to save into the DB
+			$date->setTimezone(new DateTimeZone('GMT'));
+			$data['aired_date'] = $date->format('Y-m-d H:i:s');
 
 			//check already exists
 			$lookup_array = array(
@@ -61,6 +75,18 @@ class Show extends DatabaseEntity{
 
 			}
 		}
+	}
+
+	/**
+	 * update show if force update - rarely need to do this
+	 */
+	public function updateShow(){
+		$tvrage = new TvRage();
+		$tvrage_id = $this->getTvrageId();
+
+		$data = $tvrage->getShow($tvrage_id);
+
+		$this->update($data);
 	}
 	
 }
