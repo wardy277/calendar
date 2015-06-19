@@ -28,9 +28,9 @@ class Show extends DatabaseEntity{
 		);
 
 		//todo - add useful data like air day and time
-		$id = $db->insert(self::$_table, $data);
+		$id = $db->insert(static::$_table, $data);
 
-		return new Show($id);
+		return Show::load($id);
 	}
 
 	public function syncEpisodes(){

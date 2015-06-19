@@ -13,8 +13,8 @@ class Kickass extends Entity{
 		//needs to be cached or something
 
 		//if(!static::$proxy){
-		if(!$_SESSION['kickass_proxy']){
-			echo $url = "http://kat.randomproxy.net";
+		if(!$_SESSION['kickass_proxy'] || $_GET['recache_kickass']){
+			$url = "http://kat.randomproxy.net";
 
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);

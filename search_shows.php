@@ -25,7 +25,6 @@ if($_GET['add_show']){
 
 	//if no episode foudn then need to generate them first
 	$show->syncEpisodes();
-	exit;
 	Url::redirect('/');
 }
 

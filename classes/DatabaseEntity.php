@@ -13,9 +13,12 @@ abstract class DatabaseEntity extends Entity{
 
 	protected $_db;
 
+	/**
+	 * @param array $row
+	 */
 	public function __construct($row){
 		global $db;
-		$this->_db   = $db;
+		$this->_db = $db;
 
 		parent::__construct($row);
 
@@ -24,6 +27,10 @@ abstract class DatabaseEntity extends Entity{
 
 	}
 
+	/**
+	 * @param $data
+	 * @return mixed
+	 */
 	public static function create($data){
 		global $db;
 		//todo - add useful data like aired day and time
@@ -38,6 +45,11 @@ abstract class DatabaseEntity extends Entity{
 		return $object;
 	}
 
+	/**
+	 * @param $id
+	 * @param bool $row
+	 * @return bool
+	 */
 	public static function load($id, $row = false){
 		global $db;
 
@@ -59,16 +71,29 @@ abstract class DatabaseEntity extends Entity{
 		}
 	}
 
+	/**
+	 * Load an object based on a where array
+	 * @param $where
+	 * @return bool
+	 */
 	public static function loadWhere($where){
 		global $db;
 
 		$row = $db->loadWhere(static::$_table, $where);
 
-		$class = get_called_class();
+		if(!empty($row)){
+			$class = get_called_class();
 
-		return $class::load($row['id'], $row);
+			return $class::load($row['id'], $row);
+		}
+		else{
+			return false;
+		}
 	}
 
+	/**
+	 * Update the current object in the database
+	 */
 	public function save(){
 		$data = $this->_data;
 
@@ -79,7 +104,7 @@ abstract class DatabaseEntity extends Entity{
 	}
 
 	public function getKey(){
-		return $this->getattr( self::$_key_field );
+		return $this->getattr(self::$_key_field);
 	}
 
 }
