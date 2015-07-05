@@ -48,6 +48,9 @@ class Show extends DatabaseEntity{
 				$timezone = 'GMT';
 			}
 
+			$timezone = trim($timezone);
+			$timezone = current(explode(" ", $timezone));
+
 			//get the time based on aired date, at the shows timezone
 			$date = new DateTime($data['aired_date'], new DateTimeZone($timezone));
 			//convert the time to GTM as a standard to save into the DB
