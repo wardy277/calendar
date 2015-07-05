@@ -166,6 +166,10 @@ class Database{
 		//escape values now
 		$data = $this->escape($data);
 
+		if(empty($data)){
+			return false;
+		}
+
 		$set_sql = "";
 		foreach($data as $field => $value){
 			$set_sql .= "`$field` = '$value', ";
