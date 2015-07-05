@@ -120,7 +120,7 @@ class TvRage extends Entity{
 						//all sources (tvrage is a a source seoul return the same array format
 						$data = array(
 							'season'     => $season_details['no'],
-							'episode'    => $episode['epnum'],
+							'episode'    => $episode['seasonnum'],
 							'title'      => $episode['title'],
 							'aired_date' => $episode['airdate'],
 							'rating'     => $episode['rating'],
