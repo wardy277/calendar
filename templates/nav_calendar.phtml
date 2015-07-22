@@ -1,8 +1,8 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container-fluid">
-		<!-- Brand and toggle get grouped for better mobile display -->
+
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-collapse">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -17,12 +17,14 @@
 			<a class="navbar-brand" href="<?=$next_month?>">
 				<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 			</a>
+
+			<a class="navbar-brand hidden-md" href="javascript:scroll_to('.today')">Today</a>
+
 		</div>
 
-		<!-- Collect the nav links, forms, and other content for toggling -->
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<div class="collapse navbar-collapse" id="bs-collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="/my_shows.php">My Shows</a></li>
+				<li><a class="navbar-brand" href="/my_shows.php">My Shows</a></li>
 			</ul>
 			<form class="navbar-form navbar-right" role="search" action="/search_shows.php">
 				<div class="form-group">

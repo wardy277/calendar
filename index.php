@@ -8,11 +8,12 @@ if($_GET['m']){
 }
 
 $calendar = new Calendar($date);
-$today = new DateTime('', new DateTimeZone($session->getTimezone()));
+$today    = new DateTime('', new DateTimeZone($session->getTimezone()));
 
 ?>
 
 <?=$calendar->buildNav()?>
+
 
 <div class="calendar">
 	<div class="calendar-header">
@@ -38,21 +39,21 @@ $today = new DateTime('', new DateTimeZone($session->getTimezone()));
 				}
 
 				$day_content = "";
-				$day = new Day($date);
+				$day         = new Day($date);
 				foreach($day->getTorrents() as $type => $torrent){
 					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
 				}
 
 
 				//today?
-				if($date->format('Y-m-d') == $today->format('Y-m-d') ){
+				if($date->format('Y-m-d') == $today->format('Y-m-d')){
 					$class .= " today";
 				}
 
 				echo "<$tag class='col-md-1 day $class'>
-					<div class='day-no'>".$date->format('d')."</div>
-					$day_content
-				  </$tag>";
+						<div class='day-no'>".$date->format('d')."</div>
+						$day_content
+					  </$tag>";
 
 				if($date->format('w') == $calendar->getWeekEnd() && $date->format('YW') != $calendar->getEndDate()->format('YW') - 1){
 					echo "</div><div class='row seven-cols week'>";

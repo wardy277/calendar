@@ -1,7 +1,7 @@
 
 body {
     /*grey is #F7F7F7 */
-
+    padding-top: 70px;
 }
 
 .calendar {
@@ -19,7 +19,6 @@ body {
     height: 150px;
     display: block;
 }
-
 
 /* last child has right border */
 .calendar .day:last-child {
@@ -48,10 +47,10 @@ body {
     border-color: #2b669a;
 }
 
-
 .day.today {
     background-color: #D9EDF7;
 }
+
 .torrent_link {
     font-size: 13px;
 }
@@ -69,7 +68,7 @@ body {
     }
 
     /* bottom of the month (from non month) */
-    .calendar .week:last-child .day:first-of-type:not(.active){
+    .calendar .week:last-child .day:first-of-type:not(.active) {
         border-top: 1px solid #2b669a;
         font-weight: bold;
     }
@@ -90,6 +89,7 @@ body {
     .calendar .week:first-child span.day:not(:last-of-type) {
         display: none;
     }
+
     .calendar .week:last-child span.day:not(:first-of-type) {
         display: none;
     }
@@ -100,10 +100,12 @@ body {
     }
 }
 
+@media (min-width: 992px) {
+    .hidden-md {
+        display: none;
+    }
 
-
-
-
+}
 
 /**
  * "Hack" for a seven column bootsrap
