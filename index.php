@@ -8,7 +8,7 @@ if($_GET['m']){
 }
 
 $calendar = new Calendar($date);
-$today = new DateTime();
+$today = new DateTime('', new DateTimeZone($session->getTimezone()));
 
 ?>
 
@@ -39,7 +39,7 @@ $today = new DateTime();
 
 				$day_content = "";
 				$day = new Day($date);
-				foreach($day->getTorrents() as $torrent){
+				foreach($day->getTorrents() as $type => $torrent){
 					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
 				}
 

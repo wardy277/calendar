@@ -48,10 +48,17 @@ body {
     border-color: #2b669a;
 }
 
-made a way to delete shows
-style tweaks
 
+.day.today {
+    background-color: #D9EDF7;
+}
+.torrent_link {
+    font-size: 13px;
+}
 
+.show_block img {
+    height: 240px;
+}
 
 @media (max-width: 992px) {
     .calendar .week .day.active {
@@ -92,19 +99,6 @@ style tweaks
         display: none;
     }
 }
-
-
-.day.today {
-    background-color: #D9EDF7;
-}
-.torrent_link {
-    font-size: 13px;
-}
-
-.show_block img {
-    height: 240px;
-}
-
 
 
 

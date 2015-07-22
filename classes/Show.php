@@ -41,6 +41,8 @@ class Show extends DatabaseEntity{
 			//set aired time from show
 			$data['aired_date'] .= " ".$this->getAirTime();
 
+
+
 			//convert aired date to GMT as that's zero using  timezone for show
 			$timezone = $this->getTimezone();
 			if(empty($timezone) || $timezone == '0000-00-00 00:00:00'){
@@ -66,11 +68,14 @@ class Show extends DatabaseEntity{
 
 			$object = Episode::loadWhere($lookup_array);
 
+
 			if($object){
 				//update
 				foreach($data as $field => $value){
 					$object->setAttr($field, $value);
 				}
+
+				$object->save();
 			}
 			else{
 				$data['show_id'] = $this->getId();

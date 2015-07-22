@@ -3,8 +3,12 @@ include(dirname(__FILE__)."/../settings.php");
 
 //only shows from users
 $sql = "SELECT s.id as show_id
-		FROM tv_shows s
-        JOIN users_shows u ON u.show_id = s.id
+			FROM tv_shows s
+			JOIN users_shows u ON u.show_id = s.id
+			JOIN episode_list e ON e.show_id = s.id
+			#WHERE s.id = 5
+			GROUP BY s.id
+			ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC
 		";
 
 if($_GET['s']){
@@ -17,6 +21,7 @@ foreach($db->getArray($sql) as $row){
 	$show = Show::load($row['show_id']);
 
 	if($show){
+		echo "Syncing ".$show->getTitle()."<br />\n";
 		$show->syncEpisodes();
 	}
 }

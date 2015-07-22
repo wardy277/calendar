@@ -25,7 +25,7 @@ class Session extends DatabaseEntity{
 			//create one as this is as new user
 			$data = array(
 				'session_id' => $session_id,
-				'date_added' => date('Y-m-d H:i:s')
+				'date_added' => date('Y-m-d H:i:s'),
 			);
 
 			$session = Session::create($data);
@@ -47,5 +47,10 @@ class Session extends DatabaseEntity{
 		return $this->user;
 	}
 
+
+	//todo - need to get this from session->user
+	public function getTimezone(){
+		return 'Europe/London';
+	}
 
 }
