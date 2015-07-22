@@ -31,10 +31,12 @@ class Url extends Entity{
 	}
 
 	public function buildAnchor($label=false){
+		$class = "";
+
 		if(!$label){
 			if($this->getButton()){
 				$label = $this->getButton();
-				$class = "btn btn-info";
+				$class = "btn btn-info ";
 			}
 			else{
 				$label = $this->getLabel();
@@ -44,6 +46,8 @@ class Url extends Entity{
 				$label = 'Link';
 			}
 		}
+
+		$class .= $this->getClass();
 
 		$url = $this->getPath().'?'.http_build_query($this->getParams());
 

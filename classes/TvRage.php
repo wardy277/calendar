@@ -7,6 +7,10 @@
  * Time: 15:03
  */
 class TvRage extends Entity{
+	private static $urls = array(
+		'all'     => 'http://services.tvrage.com/myfeeds/currentshows.php?key=',
+		'current' => 'http://services.tvrage.com/myfeeds/currentshows.php?key='
+	);
 
 	public function __construct($data = false){
 		if(!$data){
@@ -17,8 +21,20 @@ class TvRage extends Entity{
 		return parent::__construct($data);
 	}
 
-	public function getAllShows(){
-		$url           = "http://services.tvrage.com/myfeeds/currentshows.php?key=".$this->getApiKey();
+	public function getUrl($type){
+		if(!array_key_exists($type, self::$urls)){
+			$type = 'all';
+		}
+
+		$url = self::$urls[ $type ];
+
+		return $url.$this->getApiKey();
+
+	}
+
+	public function getShows($type = 'all'){
+		$url = $this->getUrl($type);
+
 		$file_contents = file_get_contents($url);
 
 		if(empty($file_contents)){
@@ -37,6 +53,14 @@ class TvRage extends Entity{
 		}
 
 		return $shows;
+	}
+
+	public function getAllShows(){
+		return $this->getShows('all');
+	}
+
+	public function getCurrentShows(){
+		return $this->getShows('current');
 	}
 
 	public function searchShows($search){
@@ -80,8 +104,12 @@ class TvRage extends Entity{
 		$data['title']     = $data['showname'];
 		$data['url']       = $data['showlink'];
 		$data['country']   = $data['origin_country'];
-		$data['air_time']   = $data['airtime'];
+		$data['air_time']  = $data['airtime'];
 		$data['air_day']   = $data['airday'];
+
+		if(empty($data['tvrage_id'])){
+			return false;
+		}
 
 		return $data;
 	}

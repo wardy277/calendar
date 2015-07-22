@@ -30,6 +30,7 @@ foreach($db->getArray($sql) as $row){
 	$delete_show = new Url();
 	$delete_show->addParam('delete_show', $show->getId());
 	$delete_show->setLabel('<span class="glyphicon glyphicon-trash pull-right" aria-hidden="true"></span>');
+	$delete_show->setClass('confirm');
 
 	?>
 

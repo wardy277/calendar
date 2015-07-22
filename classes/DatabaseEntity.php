@@ -132,7 +132,10 @@ abstract class DatabaseEntity extends Entity{
 				$this->setAttr($field, $value);
 			}
 		}
-		//$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
+
+		if(!empty($data)){
+			$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
+		}
 	}
 
 }

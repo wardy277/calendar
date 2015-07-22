@@ -45,7 +45,7 @@ $today = new DateTime();
 
 
 				//today?
-				if($date == $today ){
+				if($date->format('Y-m-d') == $today->format('Y-m-d') ){
 					$class .= " today";
 				}
 
