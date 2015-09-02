@@ -8,6 +8,8 @@
  */
 class Kickass extends Entity{
 	private static $proxy;
+	private $domain = "http://kat.cr";//todo - and this
+	private $unblocked_isps = array('threembb'); //todo - and this- dbms this bad boy
 
 	public function getProxy(){
 		//needs to be cached or something
@@ -56,6 +58,36 @@ class Kickass extends Entity{
 		//apparently the ending / is required
 		$search_string = "/usearch/".urlencode($search)."/";
 
-		return $this->getProxy().$search_string;
+		//some ISPs areawsome and dont block :)
+		if($this->ISPBlocked()){
+			return $this->getProxy().$search_string;
+		}
+		else{
+			return $this->domain.$search_string;
+		}
 	}
+
+	public function ISPBlocked(){
+		$ip = $_SERVER['REMOTE_ADDR'];
+
+		$isp = gethostbyaddr($ip);
+		$array = explode('.', $isp);
+		foreach($array as $part){
+			if(is_numeric($part)){
+				continue;
+			}
+
+			$isp = $part;
+			break;
+		}
+
+		if(in_array($isp, $this->unblocked_isps)){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+
 }
