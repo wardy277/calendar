@@ -12,6 +12,15 @@ class Kickass extends Entity{
 	private $unblocked_isps = array('threembb'); //todo - and this- dbms this bad boy
 	private $proxy_url = "http://www.katproxy.com/"; //todo - dbms this;
 
+	public function __construct($data){
+		//add ucstom settings
+		$this->domain = $this->setting('kickass_url');
+		$this->proxy_url = $this->setting('kickass_proxy');
+
+		//construct as usual
+		parent::__construct($data);
+	}
+
 	public function getProxy(){
 		//needs to be cached or something
 

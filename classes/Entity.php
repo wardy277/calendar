@@ -65,4 +65,14 @@ class Entity{
 		return $string;
 	}
 
+	/**
+	 * Shortcut function to get to global site settings
+	 * @param $setting
+	 * @return mixed
+	 */
+	public function setting($setting){
+		global $settings;
+
+		return $settings[$setting];
+	}
 }

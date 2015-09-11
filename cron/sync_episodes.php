@@ -7,14 +7,16 @@ $sql = "SELECT s.id as show_id
 			JOIN users_shows u ON u.show_id = s.id
 			JOIN episode_list e ON e.show_id = s.id
 			#WHERE s.id = 5
-			GROUP BY s.id
-			ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC
 		";
 
 if($_GET['s']){
 	$search = $_GET['s'];
 	$sql .= $db->build("AND s.title like '%?%'", $search);
 }
+
+$sql .= "
+			GROUP BY s.id
+			ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC";
 
 foreach($db->getArray($sql) as $row){
 	/** @var Show $show */
