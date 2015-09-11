@@ -10,13 +10,14 @@ class Kickass extends Entity{
 	private static $proxy;
 	private $domain = "http://kat.cr";//todo - and this
 	private $unblocked_isps = array('threembb'); //todo - and this- dbms this bad boy
+	private $proxy_url = "http://www.katproxy.com/"; //todo - dbms this;
 
 	public function getProxy(){
 		//needs to be cached or something
 
 		//if(!static::$proxy){
 		if(!$_SESSION['kickass_proxy'] || $_GET['recache_kickass']){
-			$url = "http://kat.randomproxy.net";
+			$url = $this->proxy_url;
 
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
