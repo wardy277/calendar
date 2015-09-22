@@ -6,16 +6,19 @@
  * Date: 29/05/15
  * Time: 15:03
  */
-class TvRage extends Entity implements ApiAbstract  {
+class MovieDB extends Entity implements ApiAbstract{
+	private static $domain = "http://api.themoviedb.org/3";
 	private static $urls = array(
-		'all'     => 'http://services.tvrage.com/myfeeds/currentshows.php?key=',
-		'current' => 'http://services.tvrage.com/myfeeds/currentshows.php?key='
+		'all'     => '/tv/popular',
+		'current' => '/tv/on_the_air'
 	);
+
+	//todo - impliment config for psotersizes and location etc: http://api.themoviedb.org/3/configuration?api_key=ce842a1d45f50cd3de2acc09a6ec771f
 
 	public function __construct($data = false){
 		if(!$data){
 			global $settings;
-			$data = array('api_key' => $settings['tvrage_api_key']);
+			$data = array('api_key' => $settings['themoviedb_api_key']);
 		}
 
 		return parent::__construct($data);
@@ -26,10 +29,9 @@ class TvRage extends Entity implements ApiAbstract  {
 			$type = 'all';
 		}
 
-		$url = self::$urls[ $type ];
+		$url = self::$domain.self::$urls[ $type ]."?api_key=".$this->getApiKey();
 
-		return $url.$this->getApiKey();
-
+		return $url;
 	}
 
 	public function getShows($type = 'all'){
@@ -41,15 +43,18 @@ class TvRage extends Entity implements ApiAbstract  {
 			return false;
 		}
 
-		$xml = simplexml_load_string($file_contents);
+		$json = json2array($file_contents);
 
-		$shows = array();
+		//alternative image: poster_path
+		foreach($json['results'] as $show){
+			$show_details = array(
+				'show_id' => $show['id'],
+				'title' => $show['name'],
+				'image' => $show['backdrop_path'],
+				'country' => $show['origin_country'][0],
+			);
 
-		foreach($xml->children() as $results){
-			foreach($results->children() as $result){
-				$show_details = xml2array($result);
-				$shows[]      = new Entity($show_details);
-			}
+			$shows[]      = new Entity($show_details);
 		}
 
 		return $shows;
@@ -84,35 +89,29 @@ class TvRage extends Entity implements ApiAbstract  {
 	}
 
 	public function getShow($show_id){
-		$cached = "/tmp/getShow-$show_id-".date('Y-m-d');
-		if(!file_exists($cached) || filesize($cached) < 10){
-			$url           = "http://services.tvrage.com/myfeeds/showinfo.php?key=".$this->getApiKey()."&sid=".$show_id;
 
-			$file_contents = file_get_contents($url);
-			file_put_contents($cached, $file_contents);
-		}
+		$url = self::$domain."/tv/$show_id?api_key=".$this->getApiKey();
 
-		$file_contents = file_get_contents($cached);
+		$file_contents = file_get_contents($url);
 
-		$xml          = simplexml_load_string($file_contents);
-		$show_details = xml2array($xml);
-
-		//covnert to Show compatible array
-		$data = $show_details;
-
-		//convert tvrage api to show format
-		$data['tvrage_id'] = $data['showid'];
-		$data['title']     = $data['showname'];
-		$data['url']       = $data['showlink'];
-		$data['country']   = $data['origin_country'];
-		$data['air_time']  = $data['airtime'];
-		$data['air_day']   = $data['airday'];
-
-		if(empty($data['tvrage_id'])){
+		if($file_contents){
 			return false;
 		}
 
-		return $data;
+		$show = json2array($file_contents);
+
+		//todo - handle 404
+		$air_date = new DateTime($show['last_air_date']);
+
+		$show_details = array(
+			'show_id' => $show['id'],
+			'title' => $show['name'],
+			'image' => $show['backdrop_path'],
+			'country' => $show['origin_country'][0],
+			'air_day' => $air_date->format('l'),
+		);
+
+		return $show_details;
 	}
 
 	public function getEpisodes($show_id){

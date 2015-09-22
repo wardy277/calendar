@@ -41,6 +41,9 @@ $today    = new DateTime('', new DateTimeZone($session->getTimezone()));
 				$day_content = "";
 				$day         = new Day($date);
 				foreach($day->getTorrents() as $type => $torrent){
+					#if($torrent->getTitle() == 'Not Fade Away'){
+					#	pre_R($torrent);
+					#}
 					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
 				}
 

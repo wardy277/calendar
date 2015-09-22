@@ -9,10 +9,19 @@
 class Show extends DatabaseEntity{
 	protected static $_table = 'tv_shows';
 
-	public static function loadFromTvrage($id){
+	public static function loadFromApi($id){
 		global $db;
 
-		$sql = $db->build("SELECT * FROM `?` WHERE tvrage_id = '?' LIMIT 1", static::$_table, $id);
+		$api_id = ApiWrapper::getApiId();
+
+		$sql = $db->build("SELECT s.*
+							FROM api_shows a
+							JOIN `?` s ON s.id = a.show_id
+							WHERE a.api_id = '?'
+							AND a.api_ref = '?'
+ 							LIMIT 1",
+			static::$_table, $api_id, $id);
+
 		$row = $db->rquery($sql);
 
 		return parent::load($id, $row);
@@ -22,7 +31,23 @@ class Show extends DatabaseEntity{
 		global $db;
 
 		//todo - add useful data like air day and time
-		$id = $db->insert(static::$_table, $data);
+		//check exists first
+		$sql = $db->build("SELECT id FROM `?` WHERE title = '?'", static::$_table, $data['title']);
+		$id = $db->fquery($sql);
+
+		if(!$id){
+			$id = $db->insert(static::$_table, $data);
+		}
+
+		//insert into link table
+		$api_id = ApiWrapper::getApiId();
+		$data   = array(
+			'api_id'  => $api_id,
+			'show_id' => $id,
+			'api_ref' => $data['show_id'],
+		);
+
+		$db->insert('api_shows', $data);
 
 		return Show::load($id);
 	}
@@ -34,13 +59,12 @@ class Show extends DatabaseEntity{
 		$this->updateShow();
 
 		$data   = array('api_key' => $settings['tvrage_api_key']);
-		$tvrage = new TvRage($data);
+		$tvrage = ApiWrapper::load($data);
 
 
 		foreach($tvrage->getEpisodes($this->getTvrageId()) as $data){
 			//set aired time from show
 			$data['aired_date'] .= " ".$this->getAirTime();
-
 
 
 			//convert aired date to GMT as that's zero using  timezone for show
@@ -89,12 +113,16 @@ class Show extends DatabaseEntity{
 	 * update show if force update - rarely need to do this
 	 */
 	public function updateShow(){
-		$tvrage = new TvRage();
-		$tvrage_id = $this->getTvrageId();
+		$api_db = ApiWrapper::load();
+		$api_id = $this->getApiId();
 
-		$data = $tvrage->getShow($tvrage_id);
+		$data = $api_db->getShow($api_id);
 
 		$this->update($data);
+	}
+
+	public function getApiId(){
+
 	}
 	
 }

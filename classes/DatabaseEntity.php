@@ -137,5 +137,4 @@ abstract class DatabaseEntity extends Entity{
 			$this->_db->update(static::$_table, $data, array(static::$_key_field => $this->getKey()));
 		}
 	}
-
 }

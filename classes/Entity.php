@@ -75,4 +75,9 @@ class Entity{
 
 		return $settings[$setting];
 	}
+
+	public function getArray(){
+		return $this->_data;
+	}
+
 }
