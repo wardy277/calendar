@@ -137,11 +137,10 @@ class MovieDB extends Entity implements ApiAbstract{
 			return false;
 		}
 
-
 		if($type == 'latest'){
 			$num_seasons = 0;
 			foreach($show_details['seasons'] as $season){
-				if($season['season_number'] > $num_seasons){
+				if($season['season_number'] > $num_seasons && $season['episode_count'] > 0){
 					$num_seasons = $season['season_number'];
 					$seasons = array($season);
 				}
