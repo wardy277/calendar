@@ -97,12 +97,23 @@ class Show extends DatabaseEntity{
 			//set aired time from show
 			$data['aired_date'] .= " ".$this->getAirTime();
 
-
 			//convert aired date to GMT as that's zero using  timezone for show
 			$timezone = $this->getTimezone();
+
+			//calculate is not provided
 			if(empty($timezone) || $timezone == '0000-00-00 00:00:00'){
-				//default to GMT
-				$timezone = 'GMT';
+				switch($this->getCountry()){
+					case "US":
+						$timezone = 'GMT-5 +DST';
+						break;
+					case "CA":
+						$timezone = 'GMT-4 +DST';
+						break;
+					default:
+						//default to GMT
+						$timezone = 'GMT';
+						break;
+				}
 			}
 
 			$timezone = trim($timezone);
@@ -159,4 +170,13 @@ class Show extends DatabaseEntity{
 	#	pre_R($this);
 	#	exit;
 	#}
+
+	public function getAirTime(){
+		if($this->getAttr('air_time') == ''){
+			return '21:00';
+		}
+		else{
+			return $this->getAttr('air_time');
+		}
+	}
 }
