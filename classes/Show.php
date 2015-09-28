@@ -30,8 +30,9 @@ class Show extends DatabaseEntity{
 		$row = $db->rquery($sql);
 
 		if(!$row){
-			echo "Show not found $id";
-			exit;
+			//not under this api perhaps?
+			echo "Show not found $id<br />\n";
+			return false;
 		}
 
 		return parent::load($id, $row);
@@ -85,14 +86,14 @@ class Show extends DatabaseEntity{
 		return Show::load($id);
 	}
 
-	public function syncEpisodes(){
+	public function syncEpisodes($type='all'){
 		global $settings;
 		//update show first - just incase
 		$this->updateShow();
 
 		$tv_api = ApiWrapper::load();
 
-		foreach($tv_api->getEpisodes($this->getApiId()) as $data){
+		foreach($tv_api->getEpisodes($this->getApiId(), $type) as $data){
 
 			//set aired time from show
 			$data['aired_date'] .= " ".$this->getAirTime();

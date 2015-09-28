@@ -25,7 +25,7 @@ if($_GET['add_show']){
 	$session->getUser()->AddShow($show_id);
 
 	//if no episode found then need to generate them first
-	$show->syncEpisodes();
+	$show->syncEpisodes('latest');
 	Url::redirect('/');
 }
 

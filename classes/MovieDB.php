@@ -126,7 +126,7 @@ class MovieDB extends Entity implements ApiAbstract{
 	 * @param $show_id
 	 * @return array
 	 */
-	public function getEpisodes($show_id){
+	public function getEpisodes($show_id, $type='all'){
 		//get show info
 
 		///tv/{id}
@@ -137,7 +137,21 @@ class MovieDB extends Entity implements ApiAbstract{
 			return false;
 		}
 
-		foreach($show_details['seasons'] as $season_info){
+
+		if($type == 'latest'){
+			$num_seasons = 0;
+			foreach($show_details['seasons'] as $season){
+				if($season['season_number'] > $num_seasons){
+					$num_seasons = $season['season_number'];
+					$seasons = array($season);
+				}
+			}
+		}
+		else{
+			$seasons = $show_details['seasons'];
+		}
+
+		foreach($seasons as $season_info){
 			$season       = $season_info['season_number'];
 			$num_episodes = $season_info['episode_count'];
 
