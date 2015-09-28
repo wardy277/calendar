@@ -14,7 +14,7 @@ class ApiWrapper {
 	 * @param $data
 	 * @return MovieDB
 	 */
-	public static function load($data){
+	public static function load($data=array()){
 		$api_type = self::getApiType();
 
 		if($api_type == "tvrage"){

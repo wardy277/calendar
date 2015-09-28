@@ -1,24 +1,24 @@
 <?php
 include(dirname(__FILE__)."/settings.php");
 
-$data   = array('api_key' => $settings['tvrage_api_key']);
-$tvrage = new TvRage($data);
+$tv_api = ApiWrapper::load($data);
 
 if($_GET['add_show']){
-	$tvrage_id = $_GET['add_show'];
+	$api_id = $_GET['add_show'];
 
-	//get show id from tvrage_id
-	$show = Show::loadFromTvrage($tvrage_id);
+	//lookup if already have this show
+	$show = Show::loadFromApi($api_id);
 
 	if(!$show || !$show->getId()){
 		//this show is new
-		$data = $tvrage->getShow($tvrage_id);
+		$data = $tv_api->getShow($api_id);
+
 		$show = Show::create($data);
 
 		$show_id = $show->getId();
 	}
 	else{
-		$show->update($data);
+		//$show->update($data);
 		$show_id = $show->getId();
 	}
 
@@ -30,19 +30,21 @@ if($_GET['add_show']){
 }
 
 
+//todo - make this a panel not a table (because of image)
 $table_data = array('class' => 'table table-hover table-striped');
 $table      = new Table($table_data);
 
-foreach($tvrage->searchShows($_GET['search']) as $show){
+foreach($tv_api->searchShows($_GET['search']) as $show){
+
 	$add_show = new Url();
-	$add_show->addParam('add_show', $show->getShowid());
+	$add_show->addParam('add_show', $show->getShowId());
 	$add_show->setLabel('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>');
 
 	$data = array(
-		'tvrage_id' => $show->getShowid(),
-		'title'     => $show->getName(),
-		'url'       => $show->getLink(),
-		'add_show'  => $add_show
+		'api_id'   => $show->getShowId(),
+		'image'    => "<img src='".$show->getImage()."' />",
+		'title'    => $show->getName(),
+		'add_show' => $add_show
 	);
 	$table->addRow($data);
 }

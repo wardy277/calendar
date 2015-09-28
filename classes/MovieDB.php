@@ -49,12 +49,12 @@ class MovieDB extends Entity implements ApiAbstract{
 		foreach($json['results'] as $show){
 			$show_details = array(
 				'show_id' => $show['id'],
-				'title' => $show['name'],
-				'image' => $show['backdrop_path'],
+				'title'   => $show['name'],
+				'image'   => $show['backdrop_path'],
 				'country' => $show['origin_country'][0],
 			);
 
-			$shows[]      = new Entity($show_details);
+			$shows[] = new Entity($show_details);
 		}
 
 		return $shows;
@@ -69,20 +69,19 @@ class MovieDB extends Entity implements ApiAbstract{
 	}
 
 	public function searchShows($search){
-		$url           = "http://services.tvrage.com/myfeeds/search.php?key=".$this->getApiKey()."&show=".$search;
-		$file_contents = file_get_contents($url);
+		$data = array('query' => $search);
 
-		if(empty($file_contents)){
-			return false;
-		}
-
-		$xml = simplexml_load_string($file_contents);
+		$search_results = $this->queryArray('/search/tv', $data);
 
 		$shows = array();
 
-		foreach($xml->children() as $result){
-			$show_details = xml2array($result);
-			$shows[]      = new Entity($show_details);
+		foreach($search_results['results'] as $show_details){
+			$data    = array(
+				'show_id' => $show_details['id'],
+				'image'   => $this->getImage($show_details['poster_path']),
+				'name'    => $show_details['name']
+			);
+			$shows[] = new Entity($data);
 		}
 
 		return $shows;
@@ -94,7 +93,7 @@ class MovieDB extends Entity implements ApiAbstract{
 
 		$file_contents = file_get_contents($url);
 
-		if($file_contents){
+		if(!$file_contents){
 			return false;
 		}
 
@@ -103,70 +102,102 @@ class MovieDB extends Entity implements ApiAbstract{
 		//todo - handle 404
 		$air_date = new DateTime($show['last_air_date']);
 
+		$num_seasons = 0;
+		foreach($show['seasons'] as $season){
+			if($season['season_number'] > $num_seasons){
+				$num_seasons = $season['season_number'];
+			}
+		}
+
 		$show_details = array(
-			'show_id' => $show['id'],
-			'title' => $show['name'],
-			'image' => $show['backdrop_path'],
-			'country' => $show['origin_country'][0],
-			'air_day' => $air_date->format('l'),
+			'show_id'     => $show['id'],
+			'title'       => $show['name'],
+			'image'       => $show['backdrop_path'],
+			'country'     => $show['origin_country'][0],
+			'air_day'     => $air_date->format('l'),
+			'num_seasons' => $num_seasons,
 		);
 
 		return $show_details;
 	}
 
+	/**
+	 * Show id needs to be the api id
+	 * @param $show_id
+	 * @return array
+	 */
 	public function getEpisodes($show_id){
-		//check for cached
-		$cached = "/tmp/getEpisodes-$show_id-".date('Y-m-d');
-		if(!file_exists($cached) || filesize($cached) < 10){
-			$url           = "http://services.tvrage.com/myfeeds/episode_list.php?key=".$this->getApiKey()."&sid=".$show_id;
-			$file_contents = file_get_contents($url);
+		//get show info
 
-			file_put_contents($cached, $file_contents);
-		}
+		///tv/{id}
+		$show_details = $this->queryArray("/tv/$show_id");
 
-		$file_contents = file_get_contents($cached);
-
-		if(empty($file_contents)){
+		//skip on failure
+		if(!$show_details){
 			return false;
 		}
 
-		$xml = simplexml_load_string($file_contents);
+		foreach($show_details['seasons'] as $season_info){
+			$season       = $season_info['season_number'];
+			$num_episodes = $season_info['episode_count'];
 
-		$episodes = array();
+			if($season > 0){
+				//get season info
+				for($episode = 1; $episode <= $num_episodes; $episode ++){
+					//get data
+					///tv/{id}/season/{season_number}/episode/{episode_number}
+					$episode_details = $this->queryArray("/tv/$show_id/season/$season/episode/$episode");
 
-		pre_r($xml);
-
-		foreach($xml->children() as $details){
-			if($details->getName() == "Episodelist"){
-				foreach($details->children() as $season){
-
-					//season is in here <Season no="1">...</Season>
-					$season_details = xml2array($season);
-					$season_details = $season_details['@attributes'];
-
-					foreach($season->children() as $episode){
-						$episode = xml2array($episode);
-
-						//all sources (tvrage is a a source seoul return the same array format
-						$data = array(
-							'season'     => $season_details['no'],
-							'episode'    => $episode['seasonnum'],
-							'title'      => $episode['title'],
-							'aired_date' => $episode['airdate'],
-							'rating'     => $episode['rating'],
-							'link'       => $episode['link'],
-							'image'      => $episode['screencap'],
-						);
-
-						//$episodes[] = new Entity($data);
-						$episodes[] = $data;
+					//skip on failure
+					if(!$episode_details){
+						continue;
 					}
+
+					//convert to our format
+					$data = array(
+						'season'     => $season,
+						'episode'    => $episode,
+						'title'      => $episode_details['name'],
+						'aired_date' => $episode_details['air_date'],
+						'rating'     => $episode_details['rating'],
+						'image'      => $episode_details['still_path'],
+					);
+
+					//$episodes[] = new Entity($data);
+					$episodes[] = $data;
+
 				}
 			}
 		}
 
 		return $episodes;
+	}
+
+	/**
+	 * Shortcut faction to pull data from themoviedb as an array
+	 * @param $path
+	 * @param array $data
+	 * @return bool
+	 */
+	private function queryArray($path, $query = array()){
+		//set api key
+		$query['api_key'] = $this->getApiKey();
+		//build as a url
+		$url = self::$domain.$path.'?'.http_build_query($query);
+
+		$file_contents = file_get_contents($url);
+
+		if(!$file_contents){
+			return false;
+		}
+
+		return json2array($file_contents);
 
 	}
 
+	public function getImage($image){
+		//todo - get and cahe this data from http://api.themoviedb.org/3/configuration
+		return "http://image.tmdb.org/t/p/w154/".$image;
+
+	}
 }

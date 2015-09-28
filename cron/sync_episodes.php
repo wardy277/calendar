@@ -1,6 +1,9 @@
 <?php
 include(dirname(__FILE__)."/../settings.php");
 
+
+$tv_api = ApiWrapper::load($data);
+
 //only shows from users
 $sql = "SELECT s.id as show_id
 			FROM tv_shows s
@@ -21,6 +24,12 @@ $sql .= "
 foreach($db->getArray($sql) as $row){
 	/** @var Show $show */
 	$show = Show::load($row['show_id']);
+
+	//show not found - create ie
+	if(!$show){
+		//todo - get show from api - or not?
+		$show = false;
+	}
 
 	if($show){
 		echo "Syncing ".$show->getTitle()."<br />\n";

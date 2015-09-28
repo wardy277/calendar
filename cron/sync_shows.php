@@ -5,6 +5,7 @@ $full    = $_GET['full']? true: false;
 $current = $_GET['current']? true: false;
 
 $tv_api = ApiWrapper::load($data);
+$api_id = $tv_api->getApiId();
 
 if($full){
 	$shows = $tv_api->getAllShows();
@@ -16,12 +17,18 @@ else if($current){
 else{
 	//lets just get those which we have displayed
 	$shows = array();
-	$sql   = "SELECT s.tvrage_id AS showid, s.title AS showname, url AS showlink
-				FROM tv_shows s
-				JOIN users_shows u ON u.show_id = s.id
-				JOIN episode_list e ON e.show_id = s.id
-				GROUP BY s.id
-				ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC";
+	$sql   = $db->build("SELECT s.id AS show_id, s.title AS title, a.api_ref AS api_id
+							FROM api_shows a
+							JOIN `tv_shows` s ON s.id = a.show_id
+							JOIN users_shows u ON u.show_id = s.id
+							JOIN episode_list e ON e.show_id = s.id
+							WHERE a.api_id = '?'
+							AND a.api_id > 0
+							GROUP BY s.id
+							ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC",
+		$api_id
+	);
+
 
 	foreach($db->getArray($sql) as $row){
 		$shows[] = new Entity($row);

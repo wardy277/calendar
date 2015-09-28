@@ -57,7 +57,7 @@ abstract class DatabaseEntity extends Entity{
 		global $db;
 
 		if(!$row){
-			$sql = $db->build("SELECT * FROM `?` WHERE `?` = '?' LIMIT 1", static::$_table, static::$_key_field, $id);
+			echo $sql = $db->build("SELECT * FROM `?` WHERE `?` = '?' LIMIT 1", static::$_table, static::$_key_field, $id);
 			$row = $db->rquery($sql);
 		}
 

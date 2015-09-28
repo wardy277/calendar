@@ -108,6 +108,9 @@ class TvRage extends Entity implements ApiAbstract  {
 		$data['air_time']  = $data['airtime'];
 		$data['air_day']   = $data['airday'];
 
+		//todo - timezone
+		//if country == US then [timezone] => GMT-5 +DST
+
 		if(empty($data['tvrage_id'])){
 			return false;
 		}

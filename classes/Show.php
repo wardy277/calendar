@@ -9,12 +9,45 @@
 class Show extends DatabaseEntity{
 	protected static $_table = 'tv_shows';
 
+	/**
+	 * Overriding load fucntion which will include the show id for the current api
+	 * @param $id
+	 * @return bool
+	 */
+	public static function load($id){
+		global $db;
+
+		$api_id = ApiWrapper::getApiId();
+
+		$sql = $db->build("SELECT s.*, a.api_ref AS api_id
+							FROM api_shows a
+							JOIN `?` s ON s.id = a.show_id
+							WHERE a.api_id = '?'
+							AND s.id = '?'
+ 							LIMIT 1",
+			static::$_table, $api_id, $id);
+
+		$row = $db->rquery($sql);
+
+		if(!$row){
+			echo "Show not found $id";
+			exit;
+		}
+
+		return parent::load($id, $row);
+	}
+
+	/**
+	 * Load a show from an api show id
+	 * @param $id
+	 * @return Show
+	 */
 	public static function loadFromApi($id){
 		global $db;
 
 		$api_id = ApiWrapper::getApiId();
 
-		$sql = $db->build("SELECT s.*
+		$sql = $db->build("SELECT s.*, a.api_ref AS api_id
 							FROM api_shows a
 							JOIN `?` s ON s.id = a.show_id
 							WHERE a.api_id = '?'
@@ -24,7 +57,7 @@ class Show extends DatabaseEntity{
 
 		$row = $db->rquery($sql);
 
-		return parent::load($id, $row);
+		return parent::load($row['id'], $row);
 	}
 
 	public static function create($data){
@@ -33,7 +66,7 @@ class Show extends DatabaseEntity{
 		//todo - add useful data like air day and time
 		//check exists first
 		$sql = $db->build("SELECT id FROM `?` WHERE title = '?'", static::$_table, $data['title']);
-		$id = $db->fquery($sql);
+		$id  = $db->fquery($sql);
 
 		if(!$id){
 			$id = $db->insert(static::$_table, $data);
@@ -54,15 +87,13 @@ class Show extends DatabaseEntity{
 
 	public function syncEpisodes(){
 		global $settings;
-
 		//update show first - just incase
 		$this->updateShow();
 
-		$data   = array('api_key' => $settings['tvrage_api_key']);
-		$tvrage = ApiWrapper::load($data);
+		$tv_api = ApiWrapper::load();
 
+		foreach($tv_api->getEpisodes($this->getApiId()) as $data){
 
-		foreach($tvrage->getEpisodes($this->getTvrageId()) as $data){
 			//set aired time from show
 			$data['aired_date'] .= " ".$this->getAirTime();
 
@@ -92,7 +123,6 @@ class Show extends DatabaseEntity{
 
 			$object = Episode::loadWhere($lookup_array);
 
-
 			if($object){
 				//update
 				foreach($data as $field => $value){
@@ -106,6 +136,7 @@ class Show extends DatabaseEntity{
 				Episode::create($data);
 
 			}
+
 		}
 	}
 
@@ -121,8 +152,11 @@ class Show extends DatabaseEntity{
 		$this->update($data);
 	}
 
-	public function getApiId(){
-
-	}
-	
+	/**
+	 * Get id related to current api
+	 */
+	#public function getApiId(){
+	#	pre_R($this);
+	#	exit;
+	#}
 }
