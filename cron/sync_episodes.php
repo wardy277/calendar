@@ -2,7 +2,7 @@
 include(dirname(__FILE__)."/../settings.php");
 
 $tv_api = ApiWrapper::load($data);
-$type = $_GET['all']?'all':'latest';
+$type = $_GET['type']?'all':'latest';
 
 //only shows from users
 $sql = "SELECT s.id as show_id

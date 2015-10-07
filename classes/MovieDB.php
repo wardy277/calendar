@@ -213,4 +213,14 @@ class MovieDB extends Entity implements ApiAbstract{
 		return "http://image.tmdb.org/t/p/w154/".$image;
 
 	}
+
+	/**
+	 * Return api id
+	 * @return int
+	 */
+	public static function getApiId(){
+		//tdo get id from apis table where code is apitype
+		return 2;
+	}
 }
+
