@@ -115,16 +115,18 @@ class Show extends DatabaseEntity{
 						$timezone = 'GMT';
 						break;
 				}
+
 			}
 
-			$timezone = trim($timezone);
-			$timezone = current(explode(" ", $timezone));
+			$timezone = get_timezone($timezone);
 
 			//get the time based on aired date, at the shows timezone
-			$date = new DateTime($data['aired_date'], new DateTimeZone($timezone));
+			$date = new DateTime($data['aired_date'], $timezone);
+
 			//convert the time to GTM as a standard to save into the DB
-			$date->setTimezone(new DateTimeZone('GMT'));
+			$date->setTimezone(new DateTimeZone('Europe/Dublin'));
 			$data['aired_date'] = $date->format('Y-m-d H:i:s');
+
 
 			//check already exists
 			$lookup_array = array(
