@@ -118,6 +118,7 @@ class Show extends DatabaseEntity{
 
 			}
 
+			$tmp = $timezone;
 			$timezone = get_timezone($timezone);
 
 			//get the time based on aired date, at the shows timezone
@@ -127,6 +128,11 @@ class Show extends DatabaseEntity{
 			$date->setTimezone(new DateTimeZone('Europe/Dublin'));
 			$data['aired_date'] = $date->format('Y-m-d H:i:s');
 
+			$tmp .= " - ".$date->format('Y-m-d H:i');
+
+			if($_GET['debug']){
+				echo "s".$data['season']." e".$data['episode']." - ".$tmp."\n";
+			}
 
 			//check already exists
 			$lookup_array = array(
@@ -140,6 +146,9 @@ class Show extends DatabaseEntity{
 			if($object){
 				//update
 				foreach($data as $field => $value){
+					if($_GET['debug']){
+						echo "\tUpdateing $field => $value\n";
+					}
 					$object->setAttr($field, $value);
 				}
 
