@@ -30,8 +30,8 @@ class Day extends Entity{
 		$end_date   = new DateTime($end_of_day, new DateTimeZone($time_zone));
 
 		//offset is the time it takes for a torrent to be created
-		$start_date->modify('+1 hours');
-		$end_date->modify('+1 hours');
+		#$start_date->modify('+1 hours');
+		#$end_date->modify('+1 hours');
 
 		//convert local user time to GTM as a standard which is used for the DB
 		$start_date->setTimezone(new DateTimeZone('GMT'));
