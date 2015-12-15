@@ -22,8 +22,8 @@ class Day extends Entity{
 		$time_zone = $session->getTimezone();
 
 		//build start and end of current date
-		$start_of_day   = $this->getDate()->format('Y-m-d')." 00:00:00";
-		$end_of_day     = $this->getDate()->format('Y-m-d')." 23:59:59";
+		$start_of_day = $this->getDate()->format('Y-m-d')." 00:00:00";
+		$end_of_day   = $this->getDate()->format('Y-m-d')." 23:59:59";
 
 		//convert into a date time object for current users timezone
 		$start_date = new DateTime($start_of_day, new DateTimeZone($time_zone));
@@ -58,6 +58,13 @@ class Day extends Entity{
 			foreach($data as $row){
 				$shows[] = new Kickass($row);
 			}
+		}
+
+		//special -- dc week
+		if($this->getDate()->format('D') == "Thu"){
+			$yesterday = clone($this->getDate());
+			$yesterday->modify('yesterday');
+			$shows[] = new Comic(array('date' => $yesterday));
 		}
 
 		return $shows;
