@@ -37,7 +37,7 @@ class MovieDB extends Entity implements ApiAbstract{
 	public function getShows($type = 'all'){
 		$url = $this->getUrl($type);
 
-		$file_contents = file_get_contents($url);
+		$file_contents = $this->getApiCall($url);
 
 		if(empty($file_contents)){
 			return false;
@@ -91,7 +91,7 @@ class MovieDB extends Entity implements ApiAbstract{
 
 		$url = self::$domain."/tv/$show_id?api_key=".$this->getApiKey();
 
-		$file_contents = file_get_contents($url);
+		$file_contents = $this->getApiCall($url);
 
 		if(!$file_contents){
 			return false;
@@ -145,10 +145,16 @@ class MovieDB extends Entity implements ApiAbstract{
 					$seasons = array($season);
 				}
 			}
+
+			//clean the latest season as not always correct
+			// e.g there are 9 episodes but at some point some wise guy added an episode 11, which later on got deleted
+			$this->cleanEpisodes($show_id, $seasons[0]);
+
 		}
 		else{
 			$seasons = $show_details['seasons'];
 		}
+
 
 		foreach($seasons as $season_info){
 			$season       = $season_info['season_number'];
@@ -198,7 +204,7 @@ class MovieDB extends Entity implements ApiAbstract{
 		//build as a url
 		$url = self::$domain.$path.'?'.http_build_query($query);
 
-		$file_contents = file_get_contents($url);
+		$file_contents = $this->getApiCall($url);
 
 		if(!$file_contents){
 			return false;
@@ -221,6 +227,59 @@ class MovieDB extends Entity implements ApiAbstract{
 	public static function getApiId(){
 		//tdo get id from apis table where code is apitype
 		return 2;
+	}
+
+	public function getApiCall($url){
+
+		$enable_cache = true;
+
+		if($enable_cache){
+			//cache url
+			$cache = "/tmp/".urlencode($url);
+			if(!file_exists($cache)){
+				$file_contents = file_get_contents($url);
+
+				if(!$file_contents){
+					echo "<h1>Error getting Url</h1>";
+					return false;
+				}
+
+				file_put_contents($cache, $file_contents);
+			}
+
+			$file_contents = file_get_contents($cache);
+		}
+		else{
+			$file_contents = file_get_contents($url);
+		}
+
+		return $file_contents;
+	}
+
+	/**
+	 * @param $api_id - show api id NOT our show id
+	 * @param $season_data
+	 */
+	public function cleanEpisodes($api_id, $season_data){
+		global $db;
+
+		//get show id
+		$sql = $db->build("SELECT show_id FROM api_shows where api_ref = '?'", $api_id);
+		$show_id = $db->fquery($sql);
+
+		//remove shows which are no longer avaliable >= important due to php count and zeros
+		if($show_id > 0 AND $season_data['season_number'] > 1 && $season_data['episode_count'] > 1){
+			$sql = $db->build("DELETE FROM episode_list
+				WHERE show_id = '?'
+				AND season = '?'
+				AND episode >= '?'",
+				$show_id, $season_data['season_number'], $season_data['episode_count']
+			);
+
+			$db->query($sql);
+
+		}
+
 	}
 }
 

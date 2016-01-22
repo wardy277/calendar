@@ -86,8 +86,11 @@ class Database{
 	}
 
 	public function getArray($sql){
+		$start_time = microtime(true);
 		$result = $this->query($sql);
-		$dat    = array();
+		$time_taken = microtime(true) - $start_time;
+
+		$data    = array();
 
 		while($result && $row = $result->fetch_assoc()){
 			$data[] = $row;
