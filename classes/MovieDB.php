@@ -231,7 +231,7 @@ class MovieDB extends Entity implements ApiAbstract{
 
 	public function getApiCall($url){
 
-		$enable_cache = true;
+		$enable_cache = false;
 
 		if($enable_cache){
 			//cache url
