@@ -96,40 +96,42 @@ class Show extends DatabaseEntity{
 		foreach($tv_api->getEpisodes($this->getApiId(), $type) as $data){
 
 			//set aired time from show
-			$data['aired_date'] .= " ".$this->getAirTime();
+			if(!empty($data['aired_date'])){
+				$data['aired_date'] .= " ".$this->getAirTime();
 
-			//convert aired date to GMT as that's zero using  timezone for show
-			$timezone = $this->getTimezone();
+				//convert aired date to GMT as that's zero using  timezone for show
+				$timezone = $this->getTimezone();
 
-			//calculate is not provided
-			if(empty($timezone) || $timezone == '0000-00-00 00:00:00'){
-				switch($this->getCountry()){
-					case "US":
-						$timezone = 'GMT-5 +DST';
-						break;
-					case "CA":
-						$timezone = 'GMT-4 +DST';
-						break;
-					default:
-						//default to GMT
-						$timezone = 'GMT';
-						break;
+				//calculate is not provided
+				if(empty($timezone) || $timezone == '0000-00-00 00:00:00'){
+					switch ($this->getCountry()){
+						case "US":
+							$timezone = 'GMT-5 +DST';
+							break;
+						case "CA":
+							$timezone = 'GMT-4 +DST';
+							break;
+						default:
+							//default to GMT
+							$timezone = 'GMT';
+							break;
+					}
+
 				}
 
+				$tmp      = $timezone;
+				$timezone = get_timezone($timezone);
+
+				//get the time based on aired date, at the shows timezone
+				$date = new DateTime($data['aired_date'], $timezone);
+
+				//convert the time to GTM as a standard to save into the DB
+				$date->setTimezone(new DateTimeZone('Europe/Dublin'));
+				$data['aired_date'] = $date->format('Y-m-d H:i:s');
+
+				$tmp .= " - ".$date->format('Y-m-d H:i');
 			}
-
-			$tmp = $timezone;
-			$timezone = get_timezone($timezone);
-
-			//get the time based on aired date, at the shows timezone
-			$date = new DateTime($data['aired_date'], $timezone);
-
-			//convert the time to GTM as a standard to save into the DB
-			$date->setTimezone(new DateTimeZone('Europe/Dublin'));
-			$data['aired_date'] = $date->format('Y-m-d H:i:s');
-
-			$tmp .= " - ".$date->format('Y-m-d H:i');
-
+			
 			if($_GET['debug']){
 				echo "s".$data['season']." e".$data['episode']." - ".$tmp."\n";
 			}
