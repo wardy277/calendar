@@ -56,7 +56,7 @@ class Day extends Entity{
 
 		if(!empty($data)){
 			foreach($data as $row){
-				$shows[] = new Kickass($row);
+				$shows[] = new Zooqle($row);
 			}
 		}
 
