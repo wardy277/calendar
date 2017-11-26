@@ -1,109 +1,150 @@
 
 body {
-    /*grey is #F7F7F7 */
-    padding-top: 70px;
+	/*grey is #F7F7F7 */
+	padding-top: 70px;
 }
 
 .calendar {
-    width: 90%;
-    margin: 0 auto;
+	width: 90%;
+	margin: 0 auto;
 }
 
 .calendar .week-title {
-    text-align: center;
+	text-align: center;
 }
 
 .calendar .day {
-    border-left: 1px solid #CECECE;
-    border-top: 1px solid #CECECE;
-    height: 150px;
-    display: block;
+	border-left: 1px solid #CECECE;
+	border-top: 1px solid #CECECE;
+	height: 150px;
+	display: block;
+	overflow: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.calendar .day {
+	padding-top: 20px;
+}
+
+.calendar .day a {
+	color: #83aed2;
+}
+
+.calendar .day.active a {
+	color: #337ab7;
+}
+
+.calendar .day:after {
+	display: block;
+	content: attr(data-title);
+	position: absolute;
+	top: 0;
+	font-weight: 300;
+	color: #a7a7a7;
+}
+
+.calendar .day.active:after {
+	color: #333;
+}
+
+@media (max-width: 991px) {
+	.calendar .day:after {
+		padding-top:5px;
+		content: attr(data-mobile-title);
+	}
+
+	.calendar .day {
+		padding-top:25px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 }
 
 /* last child has right border */
 .calendar .day:last-child {
-    border-right: 1px solid #CECECE;
+	border-right: 1px solid #CECECE;
 }
 
 /* next months days */
 .calendar .week:last-child .day {
-    border-top: 1px solid #2b669a;
-    border-bottom: 1px solid #CECECE;
+	border-top: 1px solid #2b669a;
+	border-bottom: 1px solid #CECECE;
 }
 
 .calendar .week:last-child .day.active {
-    border-bottom: 1px solid #2b669a;
+	border-bottom: 1px solid #2b669a;
 }
 
 .calendar .week:last-child span.day:first-of-type {
-    border-left: 1px solid #2b669a;
+	border-left: 1px solid #2b669a;
 }
 
 .calendar .week:last-child span.day:first-child {
-    border-left: 1px solid #CECECE;
+	border-left: 1px solid #CECECE;
 }
 
 .calendar .day.active {
-    border-color: #2b669a;
+	border-color: #2b669a;
 }
 
 .day.today {
-    background-color: #D9EDF7;
+	background-color: #D9EDF7;
 }
 
 .torrent_link {
-    font-size: 13px;
+	font-size: 13px;
 }
 
 .show_block img {
-    height: 240px;
+	height: 240px;
 }
 
-@media (max-width: 992px) {
-    .calendar .week .day.active {
-        border-right: 1px solid #2b669a;
-        border-left: 1px solid #2b669a;
-        border-top: 1px solid #2b669a;
-        border-bottom: none !important;
-    }
+@media (max-width: 991px) {
+	.calendar .week .day.active {
+		border-right: 1px solid #2b669a;
+		border-left: 1px solid #2b669a;
+		border-top: 1px solid #2b669a;
+		border-bottom: none !important;
+	}
 
-    /* bottom of the month (from non month) */
-    .calendar .week:last-child .day:first-of-type:not(.active) {
-        border-top: 1px solid #2b669a;
-        font-weight: bold;
-    }
+	/* bottom of the month (from non month) */
+	.calendar .week:last-child .day:first-of-type:not(.active) {
+		border-top: 1px solid #2b669a;
+		font-weight: bold;
+	}
 
-    /* top non month cells */
-    .calendar .week:first-child span.day:last-of-type {
-        border-right: 1px solid #CECECE;
-    }
+	/* top non month cells */
+	.calendar .week:first-child span.day:last-of-type {
+		border-right: 1px solid #CECECE;
+	}
 
-    /* bottom non month cells */
-    .calendar .week:last-child span.day:first-of-type {
-        border-top: none;
-        border-right: 1px solid;
-        border-color: #CECECE;
-    }
+	/* bottom non month cells */
+	.calendar .week:last-child span.day:first-of-type {
+		border-top: none;
+		border-right: 1px solid;
+		border-color: #CECECE;
+	}
 
-    /* hide some of the days apart from the closest */
-    .calendar .week:first-child span.day:not(:last-of-type) {
-        display: none;
-    }
+	/* hide some of the days apart from the closest */
+	.calendar .week:first-child span.day:not(:last-of-type) {
+		display: none;
+	}
 
-    .calendar .week:last-child span.day:not(:first-of-type) {
-        display: none;
-    }
+	.calendar .week:last-child span.day:not(:first-of-type) {
+		display: none;
+	}
 
-    /* hide the week days */
-    .calendar .calendar_title {
-        display: none;
-    }
+	/* hide the week days */
+	.calendar .calendar_title {
+		display: none;
+	}
 }
 
-@media (min-width: 992px) {
-    .hidden-md {
-        display: none;
-    }
+@media (min-width: 991px) {
+	.hidden-md {
+		display: none;
+	}
 
 }
 
@@ -112,21 +153,21 @@ body {
  */
 
 @media (min-width: 768px) {
-    .seven-cols .col-md-1,
-    .seven-cols .col-sm-1,
-    .seven-cols .col-lg-1 {
-        width: 100%;
-        *width: 100%;
-    }
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 100%;
+		*width: 100%;
+	}
 }
 
 @media (min-width: 992px) {
-    .seven-cols .col-md-1,
-    .seven-cols .col-sm-1,
-    .seven-cols .col-lg-1 {
-        width: 14.285714285714285714285714285714%;
-        *width: 14.285714285714285714285714285714%;
-    }
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 14.285714285714285714285714285714%;
+		*width: 14.285714285714285714285714285714%;
+	}
 }
 
 /**
@@ -134,11 +175,11 @@ body {
  *  Only to demonstrate the usage of @media for large screens
  */
 @media (min-width: 1200px) {
-    .seven-cols .col-md-1,
-    .seven-cols .col-sm-1,
-    .seven-cols .col-lg-1 {
-        width: 14.285714285714285714285714285714%;
-        *width: 14.285714285714285714285714285714%;
-    }
+	.seven-cols .col-md-1,
+	.seven-cols .col-sm-1,
+	.seven-cols .col-lg-1 {
+		width: 14.285714285714285714285714285714%;
+		*width: 14.285714285714285714285714285714%;
+	}
 }
 

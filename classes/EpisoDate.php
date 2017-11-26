@@ -89,15 +89,22 @@ class EpisoDate extends Entity implements ApiAbstract {
 	/**
 	 * Search for a show
 	 * @param $search
+	 * @param int $page
 	 * @return array
 	 */
-	public function searchShows($search){
+	public function searchShows($search, $page=1){
 		//defaults
 		$shows = array();
+		$found = false;
 		
-		$search_results = $this->queryArray('/search?q='.urlencode($search));
+		$search_results = $this->queryArray('/search?q='.urlencode($search)."&page=".$page);
 		
 		foreach($search_results['tv_shows'] as $show_details){
+			
+			if($show_details['name'] == $search){
+				$found = true;
+			}
+			
 			$data    = array(
 				'show_id' => $show_details['id'],
 				'image'   => $this->getImage($show_details['image_thumbnail_path']),
@@ -105,6 +112,12 @@ class EpisoDate extends Entity implements ApiAbstract {
 			);
 			$shows[] = new Entity($data);
 		}
+		
+		if(!$found && $page == 1){
+			//try second page
+			$shows = $this->searchShows($search, 2);
+		}
+		
 		
 		return $shows;
 	}

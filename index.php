@@ -41,9 +41,6 @@ $today    = new DateTime('', new DateTimeZone($session->getTimezone()));
 				$day_content = "";
 				$day         = new Day($date);
 				foreach($day->getTorrents() as $type => $torrent){
-					#if($torrent->getTitle() == 'Not Fade Away'){
-					#	pre_R($torrent);
-					#}
 					$day_content .= '<div class="torrent_link">'.$torrent->buildLink()."</div>";
 				}
 
@@ -53,8 +50,7 @@ $today    = new DateTime('', new DateTimeZone($session->getTimezone()));
 					$class .= " today";
 				}
 
-				echo "<$tag class='col-md-1 day $class'>
-						<div class='day-no'>".$date->format('d')."</div>
+				echo "<$tag class='col-md-1 day $class' data-title='".$date->format('d')."' data-mobile-title='".$date->format('l jS')."'>
 						$day_content
 					  </$tag>";
 

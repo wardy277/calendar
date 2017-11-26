@@ -6,7 +6,9 @@
  * Date: 15/12/15
  * Time: 15:39
  */
-class Comic extends Kickass {
+class Comic extends Entity {
+	
+	private $domain = "https://worldwidetorrents.me";
 
 	public function buildLink(){
 		//date is in american format as vertigo is american
@@ -15,5 +17,12 @@ class Comic extends Kickass {
 		$url = $this->buildSearch($search);
 
 		return "<a href='$url' title='$week' target='_blank'>DC You</a>";
+	}
+	
+	public function buildSearch($search){
+		//apparently the ending / is required
+		$search_string = '/torrents-search.php?search='.urlencode($search);
+		
+		return $this->domain.$search_string;
 	}
 }

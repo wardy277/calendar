@@ -9,7 +9,8 @@ if($_GET['delete_show']){
 						WHERE user_id = '?'
 						AND show_id = '?'",
 		$session->getUser()->getId(), $id);
-	$db->query($sql);
+	echo "Disabled";
+	#$db->query($sql);
 }
 
 //only shows from users
