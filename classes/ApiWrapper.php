@@ -12,7 +12,7 @@ class ApiWrapper {
 	/**
 	 * Returns the currently selected api class
 	 * @param $data
-	 * @return MovieDB
+	 * @return EpisoDate
 	 */
 	public static function load($data=array()){
 		$api_type = self::getApiType();
@@ -22,6 +22,9 @@ class ApiWrapper {
 		}
 		else if($api_type == "themoviedb"){
 			return new MovieDB($data);
+		}
+		else if($api_type == "episodate"){
+			return new EpisoDate($data);
 		}
 		else{
 			echo "API Fail";
@@ -40,6 +43,6 @@ class ApiWrapper {
 
 	public static function getApiId(){
 		//tdo get id from apis table where code is apitype
-		return 2;
+		return 3;
 	}
 }

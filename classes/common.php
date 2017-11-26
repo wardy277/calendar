@@ -10,13 +10,13 @@ if(substr($_SERVER['SHELL'], 0, 4) == '/bin'){
 		$_GET[ $request[0] ]     = $request[1];
 	}
 
-	if($_REQUEST['debug'] == 1){
+	if(isset($_REQUEST['debug'])){
 		$_GET['debug'] = 1;
 	}
 	$cronning = true;
 }
 
-if($_GET['debug'] == 1){
+if(isset($_GET['debug'])){
 	ini_set("display_errors", 1);
 	error_reporting(E_ALL ^ E_NOTICE);
 }
@@ -26,6 +26,10 @@ function pre_r($v){
 	echo "\n<pre>";
 	print_r($v);
 	echo "</pre>\n";
+}
+
+function pre($v){
+	pre_r($v);
 }
 
 function my_autoloader($class){

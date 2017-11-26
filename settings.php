@@ -7,6 +7,8 @@ global $settings, $cronning, $session, $calendar;
 require_once(dirname(__FILE__)."/classes/common.php");
 require_once(dirname(__FILE__)."/connection_settings.php");
 
+$db=  new Database($db_server, $db_username, $db_password, $db_name);
+
 //maybe this can be a class
 $sql = "SELECT * FROM settings";
 foreach($db->getArray($sql) as $setting){
@@ -25,6 +27,9 @@ if(!$cronning){
 	ob_start();
 	register_shutdown_function('shutdown_function');
 }
+
+$tv_api = ApiWrapper::load();
+$api_id = $tv_api->getApiId();
 
 function shutdown_function(){
 	global $calendar;

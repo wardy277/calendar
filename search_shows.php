@@ -12,7 +12,7 @@ if($_GET['add_show']){
 	if(!$show || !$show->getId()){
 		//this show is new
 		$data = $tv_api->getShow($api_id);
-
+		
 		$show = Show::create($data);
 
 		$show_id = $show->getId();
@@ -21,7 +21,7 @@ if($_GET['add_show']){
 		//$show->update($data);
 		$show_id = $show->getId();
 	}
-
+	
 	$session->getUser()->AddShow($show_id);
 
 	//if no episode found then need to generate them first

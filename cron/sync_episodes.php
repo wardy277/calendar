@@ -1,8 +1,8 @@
 <?php
 include(dirname(__FILE__)."/../settings.php");
 
-$tv_api = ApiWrapper::load($data);
-$type = $_GET['type']?'all':'latest';
+$tv_api = ApiWrapper::load();
+$type = isset($_GET['type'])?'all':'latest';
 
 //only shows from users
 $sql = "SELECT s.id as show_id
@@ -13,7 +13,7 @@ $sql = "SELECT s.id as show_id
 			#WHERE s.id = 5
 		";
 
-if($_GET['s']){
+if(isset($_GET['s'])){
 	$search = $_GET['s'];
 	$sql .= $db->build("AND s.title like '%?%'", $search);
 }

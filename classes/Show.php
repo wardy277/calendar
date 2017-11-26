@@ -97,7 +97,10 @@ class Show extends DatabaseEntity{
 
 			//set aired time from show
 			if(!empty($data['aired_date'])){
-				$data['aired_date'] .= " ".$this->getAirTime();
+				//guestimate airtime if not set
+				if(strlen($data['aired_date']) == 10){
+					$data['aired_date'] .= " ".$this->getAirTime();
+				}
 
 				//convert aired date to GMT as that's zero using  timezone for show
 				$timezone = $this->getTimezone();
@@ -132,7 +135,7 @@ class Show extends DatabaseEntity{
 				$tmp .= " - ".$date->format('Y-m-d H:i');
 			}
 			
-			if($_GET['debug']){
+			if(isset($_GET['debug']) && $_GET['debug'] == 'time'){
 				echo "s".$data['season']." e".$data['episode']." - ".$tmp."\n";
 			}
 
@@ -148,12 +151,12 @@ class Show extends DatabaseEntity{
 			if($object){
 				//update
 				foreach($data as $field => $value){
-					if($_GET['debug']){
-						echo "\tUpdateing $field => $value\n";
+					if(isset($_GET['debug'])){
+						echo "\tUpdating $field => $value\n";
 					}
 					$object->setAttr($field, $value);
 				}
-
+				
 				$object->save();
 			}
 			else{

@@ -77,7 +77,7 @@ abstract class DatabaseEntity extends Entity{
 	/**
 	 * Load an object based on a where array
 	 * @param $where
-	 * @return bool
+	 * @return DatabaseEntity
 	 */
 	public static function loadWhere($where){
 		global $db;
@@ -103,7 +103,7 @@ abstract class DatabaseEntity extends Entity{
 		unset($data['id']);
 
 		foreach($this->_data as $field => $value){
-			if($this->_data_original[$field] != $value){
+			if(isset($this->_data_original[$field]) && $this->_data_original[$field] != $value){
 				$data[$field] = $value;
 			}
 		}
@@ -128,7 +128,7 @@ abstract class DatabaseEntity extends Entity{
 
 		//only those which have changed
 		foreach($this->_data as $field => $value){
-			if($data[$field] != $value){
+			if(isset($data[$field]) && $data[$field] != $value){
 				$this->setAttr($field, $value);
 			}
 		}
