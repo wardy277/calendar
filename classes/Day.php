@@ -101,9 +101,9 @@ class Day extends Entity{
                                                         AND e.aired_date BETWEEN '?' AND '?'
                                                         AND episode > 0
 							
-							#group by date(e.aired_date)
-                                                        ORDER BY time, title, season, episode",
+                                                        ORDER BY time, t.title, season, episode",
 	                        $session->getUserId(), $start_range, $end_range);
+			#group by date(e.aired_date)
 
 			foreach($db->getArray($sql) as $row){
 				static::$_cache[$row['day']][] = $row;

@@ -7,7 +7,8 @@ global $settings, $cronning, $session, $calendar;
 require_once(dirname(__FILE__)."/classes/common.php");
 require_once(dirname(__FILE__)."/connection_settings.php");
 
-$db=  new Database($db_server, $db_username, $db_password, $db_name);
+#$db=  new Database($db_server, $db_username, $db_password, $db_name);
+$db=  new DatabaseSQLite('database/database.sqlite3');
 
 //maybe this can be a class
 $sql = "SELECT * FROM settings";

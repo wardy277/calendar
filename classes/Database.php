@@ -1,8 +1,14 @@
 <?php
 
-class Database {
+abstract class Database {
 	
-	function __construct($server, $username, $password, $database){
+	protected $db;
+	protected $server;
+	protected $username;
+	protected $password;
+	protected $database;
+	
+	function __construct($server, $username=false, $password=false, $database=false){
 		$this->server   = $server;
 		$this->username = $username;
 		$this->password = $password;
@@ -11,7 +17,7 @@ class Database {
 		$this->connect();
 	}
 	
-	private function connect(){
+	protected function connect(){
 		//connect to MySQl server via mysqli
 		$this->db = new mysqli($this->server, $this->username, $this->password, $this->database);
 		
@@ -24,19 +30,17 @@ class Database {
 		
 	}
 	
-	public function escape($data){
-		if(is_array($data)){
-			foreach($data as $field => $value){
-				$data[$field] = trim($this->escape($value));
-			}
-			
-			return $data;
-		}
-		else{
-			return $this->db->real_escape_string($data);
-		}
-	}
+	/**
+	 * @param $data
+	 * @return mixed
+	 */
+	abstract public function escape($data);
 	
+	/**
+	 * @param $sql
+	 * @param $data
+	 * @return mixed|string
+	 */
 	public function build($sql, $data){
 		
 		if(is_array($data)){
@@ -85,6 +89,8 @@ class Database {
 		return $result;
 	}
 	
+	abstract function assoc($result);
+	
 	public function getArray($sql){
 		$start_time = microtime(true);
 		$result     = $this->query($sql);
@@ -92,12 +98,9 @@ class Database {
 		
 		$data = array();
 		
-		while($result && $row = $result->fetch_assoc()){
+		while ($result && $row = $this->assoc($result)) {
 			$data[] = $row;
 		}
-		
-		//free resultset (memory optimisation)
-		$result->free();
 		
 		return $data;
 	}
@@ -106,10 +109,7 @@ class Database {
 	public function fquery($sql){
 		$result = $this->query($sql);
 		
-		$row = $result->fetch_assoc();
-		
-		//free resultset (memory optimisation)
-		$result->free();
+		$row = $this->assoc($result);
 		
 		if(count($row) == 1){
 			return current($row);
