@@ -61,7 +61,7 @@ class Day extends Entity{
 
 		if(!empty($data)){
 			foreach($data as $row){
-				$shows[] = new Zooqle($row);
+				$shows[] = new PirateBay($row);
 			}
 		}
 
