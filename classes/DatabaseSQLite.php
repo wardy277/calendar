@@ -47,22 +47,6 @@ class DatabaseSQLite extends Database {
 		return $result->fetchArray(SQLITE3_ASSOC);
 	}
 	
-	/**
-	 * @param $table
-	 * @param $data
-	 * @param bool $ignore
-	 * @return mixed
-	 */
-	public function insert($table, $data, $ignore = false){
-		
-		if(!isset($data['id'])){
-			$sql        = $this->build("SELECT MAX(id) FROM `?` WHERE id != ''", $table);
-			$data['id'] = $this->fquery($sql);
-		}
-		
-		return parent::insert($table, $data, $ignore);
-	}
-	
 	
 	public function getColumns($table){
 		$sql     = $this->build("PRAGMA table_info(`?`)", $table);

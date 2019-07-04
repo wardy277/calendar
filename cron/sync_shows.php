@@ -22,7 +22,7 @@ else{
 							WHERE a.api_id = '?'
 							AND a.api_id > 0
 							GROUP BY s.id,  a.api_ref
-							ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC",
+							ORDER BY max(case when e.aired_date < date('now') then e.aired_date else 0 end) desc",
 		$api_id
 	);
 	

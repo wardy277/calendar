@@ -10,7 +10,6 @@ $sql = "SELECT s.id as show_id
 			JOIN users_shows u ON u.show_id = s.id
 			JOIN episode_list e ON e.show_id = s.id
 			WHERE s.id > 0
-			#WHERE s.id = 5
 		";
 
 if(isset($_GET['s'])){
@@ -20,7 +19,8 @@ if(isset($_GET['s'])){
 
 $sql .= "
 			GROUP BY s.id
-			ORDER BY MAX(IF(e.aired_date < NOW(), e.aired_date, 0)) DESC";
+			ORDER BY max(case when e.aired_date < date('now') then e.aired_date else 0 end) desc
+			";
 
 foreach($db->getArray($sql) as $row){
 	/** @var Show $show */
