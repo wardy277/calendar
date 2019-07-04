@@ -37,8 +37,8 @@ class Day extends Entity{
 		#$end_date->modify('+1 hours');
 
 		//convert local user time to GTM as a standard which is used for the DB
-		$start_date->setTimezone(new DateTimeZone('GMT'));
-		$end_date->setTimezone(new DateTimeZone('GMT'));
+		#$start_date->setTimezone(new DateTimeZone('GMT'));
+		#$end_date->setTimezone(new DateTimeZone('GMT'));
 
 		$start_range = $start_date->format('Y-m-d H:i:s');
 		$end_range   = $end_date->format('Y-m-d H:i:s');
@@ -61,6 +61,11 @@ class Day extends Entity{
 
 		if(!empty($data)){
 			foreach($data as $row){
+				if($row['title'] == 'TBA'){
+					continue;
+				}
+
+				//$shows[] = new Zooqle($row);
 				$shows[] = new PirateBay($row);
 			}
 		}
