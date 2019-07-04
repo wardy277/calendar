@@ -8,7 +8,7 @@
  */
 class Comic extends Entity {
 	
-	private $domain = "https://worldwidetorrents.me";
+	private $domain = "https://worldwidetorrents.to";
 
 	public function buildLink(){
 		//date is in american format as vertigo is american
