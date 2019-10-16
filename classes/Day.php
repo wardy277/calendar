@@ -15,7 +15,7 @@ class Day extends Entity{
 	}
 
 	/**
-	 * @return Kickass[]
+	 * @return LimeTorrents[]
 	 */
 	public function getTorrents(){
 		global $db, $session;
@@ -66,7 +66,7 @@ class Day extends Entity{
 				}
 
 				//$shows[] = new Zooqle($row);
-				$shows[] = new PirateBay($row);
+				$shows[] = new LimeTorrents($row);
 			}
 		}
 
